@@ -1,7 +1,6 @@
 "use client";
 
 import { memo, useMemo } from "react";
-import clsx from "clsx";
 import ProfileLayout from "@/layouts/ProfileLayout";
 
 const OWNER = {
