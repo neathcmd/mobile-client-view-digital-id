@@ -1,8 +1,8 @@
 "use client";
 
 import { memo, useMemo } from "react";
-import clsx from "clsx";
 import ProfileLayout from "@/layouts/ProfileLayout";
+import { Button } from "@/components/ui/button";
 
 const OWNER = {
   name: "Kamado Tanjiro",
@@ -21,16 +21,41 @@ const Profile = () => {
     []
   );
 
+  const handleLogout = () => {
+    console.log("do something");
+  };
+
   return (
     <ProfileLayout>
       {/* Profile Header */}
-      <header className="w-full bg-gradient-to-r from-blue-600 to-blue-700 shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center py-10">
-            <div className="text-center space-y-4">
-              <div className="relative w-24 h-24 mx-auto">
-                <div className="w-full h-full rounded-full bg-white shadow-md flex items-center justify-center">
-                  <div className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center">
+      <header className="w-full bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 shadow-xl relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Logout Button */}
+          <div className="flex justify-end pt-6">
+            <Button onClick={handleLogout} variant="outline">
+              {" "}
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+              Logout
+            </Button>
+          </div>
+
+          <div className="flex justify-center py-12">
+            <div className="text-center space-y-6">
+              <div className="relative w-32 h-32 mx-auto">
+                <div className="w-full h-full rounded-full bg-white shadow-2xl flex items-center justify-center ring-4 ring-white/30">
+                  <div className="w-28 h-28 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
                     <svg
                       className="w-10 h-10 text-gray-500"
                       fill="currentColor"
