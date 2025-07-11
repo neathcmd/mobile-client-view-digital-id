@@ -181,21 +181,7 @@ const RegisterPage = () => {
           />
           <Button type="submit">Submit</Button>
         </form>
-<<<<<<< HEAD
-
-        <div className="mt-4 text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <a
-            href="/auth/login"
-            className="text-green-700 font-medium hover:underline"
-          >
-            Log in here!
-          </a>
-        </div>
-      </div>
-=======
       </Form>
->>>>>>> main
     </div>
   );
 };

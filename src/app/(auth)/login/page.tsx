@@ -1,74 +1,93 @@
-// pages/login.
-
 "use client";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { authRequest } from "@/lib/api/auth-api";
+import { AuthLoginForm } from "@/types/auth-type";
+import { useRouter } from "next/navigation";
 
-import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+const LoginSchema = z.object({
+  user_name: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  password: z.string().min(2, {
+    message: "Password must be at least 2 characters.",
+  }),
+});
 
-export default function Login() {
-  const [showPassword, setShowPassword] = useState(false);
+const Login = () => {
+  const navigate = useRouter();
+  const { AUTH_LOGIN } = authRequest();
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      user_name: "",
+      password: "",
+    },
+  });
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["login"],
+    mutationFn: (payload: AuthLoginForm) => AUTH_LOGIN(payload),
+    onSuccess: (data) => {
+      if (data) {
+        navigate.push("/");
+      }
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof LoginSchema>) => {
+    console.log(data, "===data login");
+    mutate(data);
+  };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-green-100">
-      <div className="bg-white rounded-3xl shadow-lg p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-green-800 mb-2">
-          Log in
-        </h2>
-        <p className="text-center text-sm text-gray-500 mb-6">
-          Fresh Food Delivered.
-        </p>
-
-        <form className="space-y-4">
-          <div className="relative">
-            <FiMail className="absolute top-3 left-3 text-green-600" />
-            <input
-              type="email"
-              placeholder="example@gmail.com"
-              className="text-gray-600 w-full pl-10 pr-4 py-2 border rounded-full bg-green-50 border-green-300 focus:outline-none focus:ring-2 focus:ring-green-400"
-            />
-          </div>
-
-          <div className="relative">
-            <FiLock className="absolute top-3 left-3 text-green-600" />
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="••••••••"
-              className="text-gray-600 w-full pl-10 pr-10 py-2 border rounded-full bg-green-50 border-green-300 focus:outline-none focus:ring-2 focus:ring-green-400"
-            />
-            <div
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute top-3 right-3 text-green-600 cursor-pointer"
-            >
-              {showPassword ? <FiEyeOff /> : <FiEye />}
-            </div>
-          </div>
-
-          <div className="flex items-center mb-4">
-            <input type="checkbox" className="mr-2" />
-            <span className="text-sm text-gray-600">Remember me</span>
-            <div className="ml-auto text-xs text-green-700 cursor-pointer">
-              Forgot your password?
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-green-700 text-white py-2 rounded-full hover:bg-green-800 transition"
-          >
-            Log in
-          </button>
+    <div className="mx-auto w-full max-w-md shadow-lg rounded-2xl p-4 mt-12">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="user_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="username" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input type="password" placeholder="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Submitting" : "Submit"}
+          </Button>
         </form>
-
-        <div className="mt-4 text-center text-sm text-gray-600">
-          Don’t have an account?{" "}
-          <a
-            href="/auth/register"
-            className="text-green-700 font-medium hover:underline"
-          >
-            Register here!
-          </a>
-        </div>
-      </div>
+      </Form>
     </div>
   );
-}
+};
+
+export default Login;
