@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 const OWNER = {
   name: "Kamado Tanjiro",
   position: "Software Developer",
-  username: "@kamado",
+  username: "kamado",
   email: "kamado@example.com",
 };
 
