@@ -1,8 +1,10 @@
 import { ReactNode } from "react";
 import Head from "next/head";
-// import Header from "@/components/Header";
-// import Footer from "@/components/Footer";
 import "@/app/globals.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+const queryClient = new QueryClient();
 
 interface DefaultLayoutProps {
   children: ReactNode;
@@ -23,10 +25,11 @@ const DefaultLayout = ({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <div className="min-h-screen flex flex-col bg-white text-gray-900">
+      <QueryClientProvider client={queryClient}>
         <main className="flex-1">{children}</main>
         {/* <Footer /> Uncomment if you have a footer */}
-      </div>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </>
   );
 };
