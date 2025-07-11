@@ -80,6 +80,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { User, Mail, Lock } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -120,13 +121,18 @@ const RegisterPage = () => {
   });
 
   function onSubmit(data: z.infer<typeof RegisterSchema>) {
+    // Do something here damn!!
     console.log(data);
   }
 
   return (
-    <div className="mx-auto w-full max-w-md shadow-lg rounded-2xl p-4 mt-12">
+    <div className="min-h-screen flex items-center justify-center bg-green-100">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6 bg-white rounded-3xl shadow-lg p-8 w-full max-w-md"
+        >
+          <h1 className="text-2xl font-bold">Register</h1>
           <FormField
             control={form.control}
             name="user_name"
@@ -134,7 +140,14 @@ const RegisterPage = () => {
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input placeholder="username" {...field} />
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Input
+                      placeholder="username"
+                      {...field}
+                      className="pl-10"
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -147,7 +160,14 @@ const RegisterPage = () => {
               <FormItem>
                 <FormLabel>Full Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="full name" {...field} />
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Input
+                      placeholder="full name"
+                      {...field}
+                      className="pl-10"
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -160,7 +180,10 @@ const RegisterPage = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="email" {...field} />
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Input placeholder="email" {...field} className="pl-10" />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -173,7 +196,14 @@ const RegisterPage = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="password" {...field} />
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Input
+                      placeholder="password"
+                      {...field}
+                      className="pl-10"
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
