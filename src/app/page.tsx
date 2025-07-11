@@ -1,11 +1,9 @@
-import DefaultLayout from "@/layouts/DefaultLayout";
+import Profile from "@/app/profile/page";
 
 export default function Home() {
   return (
-    <DefaultLayout>
-      <div>
-        <h1>Hello World</h1>
-      </div>
-    </DefaultLayout>
+    <div>
+      <Profile />
+    </div>
   );
 }
