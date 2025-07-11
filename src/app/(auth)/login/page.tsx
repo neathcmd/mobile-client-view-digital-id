@@ -2,8 +2,7 @@
 
 "use client";
 import { useState } from "react";
-import Image from "next/image";
-import Google from "../../../../public/google.png";
+
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 export default function Login() {
@@ -60,11 +59,6 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="text-center my-4 text-gray-500">OR</div>
-        <button className="w-full border border-gray-300 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-green-50 transition">
-          <Image src={Google} alt="Google" width={20} height={20} />
-          <span className="text-sm text-gray-600">Log in with Google</span>
-        </button>
         <div className="mt-4 text-center text-sm text-gray-600">
           Don’t have an account?{" "}
           <a
