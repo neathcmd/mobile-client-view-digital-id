@@ -1,5 +1,3 @@
-// pages/login.
-
 "use client";
 import { useState } from "react";
 import Image from "next/image";
@@ -68,7 +66,7 @@ export default function Login() {
         <div className="mt-4 text-center text-sm text-gray-600">
           Don’t have an account?{" "}
           <a
-            href="/auth/register"
+            href="/register"
             className="text-green-700 font-medium hover:underline"
           >
             Register here!
