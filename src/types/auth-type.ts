@@ -1,9 +1,9 @@
-export interface AuthLoginForm {
+export interface AuthLoginType {
   email: string;
   password: string;
 }
 
-export interface AuthRegisterForm {
+export interface AuthRegisterType {
   fullName: string;
   email: string;
   password: string;
