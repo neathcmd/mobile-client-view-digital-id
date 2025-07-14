@@ -1,4 +1,4 @@
-import request from "../reques";
+import request from "./reques";
 import type {
   AuthLoginForm,
   AuthRegisterForm,

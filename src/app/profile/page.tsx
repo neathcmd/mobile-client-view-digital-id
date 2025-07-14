@@ -3,7 +3,8 @@
 import { memo, useMemo } from "react";
 import ProfileLayout from "@/layouts/ProfileLayout";
 import { Button } from "@/components/ui/button";
-
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const OWNER = {
   name: "Kamado Tanjiro",
   position: "Software Developer",
@@ -56,7 +57,7 @@ const Profile = () => {
               <div className="relative w-32 h-32 mx-auto">
                 <div className="w-full h-full rounded-full bg-white shadow-2xl flex items-center justify-center ring-4 ring-white/30">
                   <div className="w-28 h-28 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                    <svg
+                    {/* <svg
                       className="w-10 h-10 text-gray-500"
                       fill="currentColor"
                       viewBox="0 0 24 24"
@@ -67,7 +68,20 @@ const Profile = () => {
                       1.79-4 4 1.79 4 4 4zm0 2c-2.67 
                       0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
                       />
-                    </svg>
+                    </svg> */}
+                     <div className="reletive px-6 pb-6">
+                      <div className="flex justify-center mt-10 mb-4">
+                        <div className="reletive">
+                          <Avatar className="w-30 h-30">
+                            <AvatarImage
+                              src="https://github.com/evilrabbit.png"
+                              alt="@evilrabbit"
+                            />
+                            <AvatarFallback>ER</AvatarFallback>
+                          </Avatar>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -129,12 +143,14 @@ const Profile = () => {
                 >
                   Profile Information
                 </h2>
-                <button
-                  type="button"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none"
-                >
-                  Edit Profile
-                </button>
+                <Link href="/profile/edit-card">
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none"
+                  >
+                    Edit Profile
+                  </button>
+                </Link>
               </div>
 
               <ul className="space-y-4">
