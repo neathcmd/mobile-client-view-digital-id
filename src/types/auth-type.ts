@@ -17,3 +17,31 @@ export interface IAuthResponse {
     fullName: string;
   };
 }
+
+// interceptor types
+export interface AuthToken {
+  accessToken: string;
+  refreshToken: string;
+  expiresAt?: number;
+}
+
+export interface AuthConfig {
+  baseURL: string;
+  timout?: number;
+  maxRetries: number;
+  retryDelay: number;
+  tokenStorageKey: string;
+  refreshTokenStorageKey: string;
+  enableLogging: boolean;
+  refreshEndpoint: string;
+  loginRedirectPath: string;
+  unauthorizedRedirectPath: string;
+}
+
+export interface ApiError {
+  code: string;
+  message: string;
+  details?: any;
+  timestamp: number;
+  requestId?: string;
+}
