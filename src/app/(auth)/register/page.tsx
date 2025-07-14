@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRegisterMutation } from "@/lib/auth-mutation";
+import { useRouter } from "next/navigation";
 
 const RegisterSchema = z.object({
   full_name: z.string().nonempty({
@@ -48,7 +50,7 @@ type RegisterFormData = z.infer<typeof RegisterSchema>;
 
 const RegisterPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(RegisterSchema),
@@ -58,27 +60,24 @@ const RegisterPage: React.FC = () => {
       email: "",
       password: "",
     },
-    // mode: "onChange",
   });
 
+  const { mutateAsync: register, isPending } = useRegisterMutation();
+  const router = useRouter();
+
   const onSubmit = async (data: RegisterFormData) => {
-    setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Remove confirmPassword before sending to API
-      const { ...registrationData } = data;
-
-      console.log("Registration data:", registrationData);
-
-      // Handle successful registration here
-      // e.g., redirect to verification page or login page
-    } catch (error) {
-      console.error("Registration error:", error);
-      // Handle registration error
-    } finally {
-      setIsLoading(false);
+      const payload = {
+        fullName: data.full_name,
+        userName: data.user_name,
+        email: data.email,
+        password: data.password,
+      };
+      await register(payload);
+      console.log("✅ Registration successful");
+      router.push("/");
+    } catch (error: any) {
+      console.error("❌ Registration error:", error);
     }
   };
 
@@ -111,7 +110,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="Enter your full name"
                         {...field}
                         className={INPUT_STYLE}
-                        disabled={isLoading}
+                        disabled={isPending}
                       />
                     </div>
                   </FormControl>
@@ -133,7 +132,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="Choose a username"
                         {...field}
                         className={INPUT_STYLE}
-                        disabled={isLoading}
+                        disabled={isPending}
                       />
                     </div>
                   </FormControl>
@@ -156,7 +155,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="Enter your email"
                         {...field}
                         className={INPUT_STYLE}
-                        disabled={isLoading}
+                        disabled={isPending}
                       />
                     </div>
                   </FormControl>
@@ -179,13 +178,13 @@ const RegisterPage: React.FC = () => {
                         placeholder="Create a strong password"
                         {...field}
                         className={INPUT_STYLE}
-                        disabled={isLoading}
+                        disabled={isPending}
                       />
                       <button
                         type="button"
                         onClick={togglePasswordVisibility}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                        disabled={isLoading}
+                        disabled={isPending}
                       >
                         {showPassword ? (
                           <EyeOff className="w-5 h-5" />
@@ -235,8 +234,8 @@ const RegisterPage: React.FC = () => {
               )}
             /> */}
 
-            <Button type="submit" className="w-full mt-6" disabled={isLoading}>
-              {isLoading ? "Creating Account..." : "Create Account"}
+            <Button type="submit" className="w-full mt-6" disabled={isPending}>
+              {isPending ? "Creating Account..." : "Create Account"}
             </Button>
 
             <div className="mt-6 text-center">

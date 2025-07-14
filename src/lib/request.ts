@@ -1,50 +1,42 @@
-// import axios from "axios";
+import axios, { type AxiosError, type AxiosRequestConfig } from "axios";
 
-// const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-// const authRequest = axios.create({
-//   baseURL: BASE_URL,
-//   //   timeout: 10000,
-// });
+const axiosInstance = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true, // 🔑 include cookies in requests
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-// // Get token from cookie
-// const getCookieValue = (name: string): string | null => {
-//   const cookies = document.cookie.split(";");
-//   const cookie = cookies.find((row) => row.trim().startsWith(`${name}=`));
-//   return cookie ? decodeURIComponent(cookie.split("=")[1]) : null;
-// };
+// Automatically retry requests once if token is expired
+axiosInstance.interceptors.response.use(
+  (response) => response.data, // simplify response shape
+  async (error: AxiosError) => {
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry?: boolean;
+    };
 
-// // Set token to cookie (used after login/register)
-// const setTokenCookie = (token: string) => {
-//   document.cookie = `token=${token}; path=/; max-age=86400`; // 1 day
-// };
+    // Check if unauthorized and not already retried
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
 
-// // Request Interceptor
-// authRequest.interceptors.request.use(
-//   (config) => {
-//     const token = getCookieValue("token");
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
+      try {
+        // Attempt to refresh the token — cookies are sent automatically
+        await axiosInstance.post("/auth/refresh");
 
-// // Response Interceptor
-// authRequest.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (error.response && error.response.status === 401) {
-//       console.warn("Unauthorized: You can redirect to login here");
-//     }
-//     return Promise.reject(error);
-//   }
-// );
+        // Retry the original request after successful refresh
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        // Optional: Redirect to login or clear session
+        console.error("Token refresh failed:", refreshError);
+        return Promise.reject(refreshError);
+      }
+    }
 
-// export { authRequest, setTokenCookie };
+    return Promise.reject(error);
+  }
+);
 
-import axios, { type AxiosRequestConfig } from "axios";
-import { CookieName } from "@/types/cookie-eunm";
-import { Cookies } from "js-cookie";
-import { useAuthStore } from "@/store/AuthStore";
+export { axiosInstance };
