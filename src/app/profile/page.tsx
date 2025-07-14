@@ -2,7 +2,9 @@
 
 import { memo, useMemo } from "react";
 import ProfileLayout from "@/layouts/ProfileLayout";
-
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const OWNER = {
   name: "Kamado Tanjiro",
   position: "Software Developer",
@@ -20,17 +22,42 @@ const Profile = () => {
     []
   );
 
+  const handleLogout = () => {
+    console.log("do something");
+  };
+
   return (
     <ProfileLayout>
       {/* Profile Header */}
-      <header className="w-full bg-gradient-to-r from-blue-600 to-blue-700 shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center py-10">
-            <div className="text-center space-y-4">
-              <div className="relative w-24 h-24 mx-auto">
-                <div className="w-full h-full rounded-full bg-white shadow-md flex items-center justify-center">
-                  <div className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center">
-                    <svg
+      <header className="w-full bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 shadow-xl relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Logout Button */}
+          <div className="flex justify-end pt-6">
+            <Button onClick={handleLogout} variant="outline">
+              {" "}
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+              Logout
+            </Button>
+          </div>
+
+          <div className="flex justify-center py-12">
+            <div className="text-center space-y-6">
+              <div className="relative w-32 h-32 mx-auto">
+                <div className="w-full h-full rounded-full bg-white shadow-2xl flex items-center justify-center ring-4 ring-white/30">
+                  <div className="w-28 h-28 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                    {/* <svg
                       className="w-10 h-10 text-gray-500"
                       fill="currentColor"
                       viewBox="0 0 24 24"
@@ -41,7 +68,20 @@ const Profile = () => {
                       1.79-4 4 1.79 4 4 4zm0 2c-2.67 
                       0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
                       />
-                    </svg>
+                    </svg> */}
+                     <div className="reletive px-6 pb-6">
+                      <div className="flex justify-center mt-10 mb-4">
+                        <div className="reletive">
+                          <Avatar className="w-30 h-30">
+                            <AvatarImage
+                              src="https://github.com/evilrabbit.png"
+                              alt="@evilrabbit"
+                            />
+                            <AvatarFallback>ER</AvatarFallback>
+                          </Avatar>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -103,12 +143,14 @@ const Profile = () => {
                 >
                   Profile Information
                 </h2>
-                <button
-                  type="button"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none"
-                >
-                  Edit Profile
-                </button>
+                <Link href="/profile/edit-card">
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none"
+                  >
+                    Edit Profile
+                  </button>
+                </Link>
               </div>
 
               <ul className="space-y-4">
