@@ -16,6 +16,7 @@ export const authRequest = () => {
       data: payload,
     });
   };
+
   return {
     AUTH_LOGIN,
     AUTH_REGISTER,
