@@ -13,8 +13,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { authRequest } from "@/lib/api/auth-api";
-import { useRouter } from "next/navigation";
+
 import { FiUser, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 const LoginSchema = z.object({
@@ -27,9 +26,6 @@ const LoginSchema = z.object({
 });
 
 const Login = () => {
-  const navigate = useRouter();
-  const { AUTH_LOGIN } = authRequest();
-
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
