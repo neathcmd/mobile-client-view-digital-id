@@ -46,5 +46,4 @@
 
 import axios, { type AxiosRequestConfig } from "axios";
 import { CookieName } from "@/types/cookie-eunm";
-import { Cookies } from "js-cookie";
-import { useAuthStore } from "@/store/AuthStore";
+import Cookies from "js-cookie";
