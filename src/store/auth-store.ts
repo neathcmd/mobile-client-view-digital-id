@@ -24,7 +24,7 @@ export const useAuthStore = create<AuthStore>()(
           refreshToken,
         },
         false,
-        "token"
+        "auth-store"
       );
     },
   }))

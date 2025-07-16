@@ -1,32 +1,37 @@
 "use client";
 
 import { memo, useMemo } from "react";
-import ProfileLayout from "@/layouts/ProfileLayout";
 import { Button } from "@/components/ui/button";
 
 const OWNER = {
-  name: "Kamado Tanjiro",
+  full_name: "Kamado Tanjiro",
   position: "Software Developer",
-  username: "kamado",
+  user_name: "kamado",
   email: "kamado@example.com",
 };
 
 const Profile = () => {
   const infoItems = useMemo(
     () => [
-      { label: "Full Name", value: OWNER.name },
-      { label: "Username", value: OWNER.username },
+      { label: "Full Name", value: OWNER.full_name },
+      { label: "Username", value: OWNER.user_name },
       { label: "Email", value: OWNER.email },
     ],
     []
   );
 
   const handleLogout = () => {
-    console.log("do something");
+    console.log("remove token logout");
+  };
+
+  const handleEditProfile = () => {
+    console.log(
+      "redirect to edit profile with default value can edit only full name and avatar"
+    );
   };
 
   return (
-    <ProfileLayout>
+    <>
       {/* Profile Header */}
       <header className="w-full bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 shadow-xl relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -105,7 +110,7 @@ const Profile = () => {
               </div>
 
               <h1 className="text-3xl font-bold text-white tracking-tight">
-                {OWNER.name}
+                {OWNER.full_name}
               </h1>
               <p className="text-blue-100 text-sm">{OWNER.position}</p>
             </div>
@@ -130,6 +135,7 @@ const Profile = () => {
                   Profile Information
                 </h2>
                 <button
+                  onClick={handleEditProfile}
                   type="button"
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none"
                 >
@@ -215,7 +221,7 @@ const Profile = () => {
           </main>
         </div>
       </div>
-    </ProfileLayout>
+    </>
   );
 };
 

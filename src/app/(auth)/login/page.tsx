@@ -47,11 +47,19 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-green-50 px-4">
       <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-md">
         <h2 className="text-2xl font-semibold text-green-800 text-center">
+<<<<<<< HEAD
           Log in
         </h2>
         <p className="text-sm text-gray-500 text-center mb-6">
           Fresh Food Delivered.
         </p>
+=======
+          Login
+        </h2>
+        {/* <p className="text-sm text-gray-500 text-center mb-6">
+          Fresh Food Delivered.
+        </p> */}
+>>>>>>> 5acc544 (complete register page)
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -59,6 +67,10 @@ const Login = () => {
               name="user_name"
               render={({ field }) => (
                 <FormItem>
+<<<<<<< HEAD
+=======
+                  <FormLabel>Username</FormLabel>
+>>>>>>> 5acc544 (complete register page)
                   <FormControl>
                     <div className="relative">
                       <FiUser className="absolute left-3 top-3.5 text-gray-400" />
@@ -79,6 +91,10 @@ const Login = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
+<<<<<<< HEAD
+=======
+                  <FormLabel>Email</FormLabel>
+>>>>>>> 5acc544 (complete register page)
                   <FormControl>
                     <div className="relative">
                       <FiLock className="absolute left-3 top-3.5 text-gray-400" />
