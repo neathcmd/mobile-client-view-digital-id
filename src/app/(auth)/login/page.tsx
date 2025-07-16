@@ -1,12 +1,15 @@
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+// import { AUTH_LOGIN } from "@/lib/api/auth-api";
+import { authRequest } from "@/lib/api/auth-api";
+import { useMutation } from "@tanstack/react-query";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
+  // FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -15,6 +18,7 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 
 import { FiUser, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import { AuthLoginType } from "@/types/auth-type";
 
 const LoginSchema = z.object({
   user_name: z.string().min(2, {
@@ -26,6 +30,7 @@ const LoginSchema = z.object({
 });
 
 const Login = () => {
+  const { AUTH_LOGIN } = authRequest();
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -35,9 +40,22 @@ const Login = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof LoginSchema>) => {
-    console.log(data, "===data login");
-  };
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["register"],
+    mutationFn: (payload: AuthLoginType) => AUTH_LOGIN(payload),
+    onSuccess: (data) => {
+      console.log(data, "===data===");
+    },
+  });
+
+  function onSubmit(data: z.infer<typeof LoginSchema>) {
+    mutate({
+      ...data,
+      user_name: data.user_name.trim(),
+      password: data.password.trim(),
+    });
+    // console.log(data, "submit data to backend");
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-green-50 px-4">
