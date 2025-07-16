@@ -84,7 +84,10 @@ axiosInstance.interceptors.response.use(
               .then((response) => resolve(response))
               .catch((err) => reject(err));
           });
-
+          const instance = axios.create({
+            baseURL: "http://localhost:8000/api/v1", // <-- update to your API base URL
+            withCredentials: true, // allow cookies if needed
+          });
           // Clear the queue
           refreshAndRetryQueue.length = 0;
 
