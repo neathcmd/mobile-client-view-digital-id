@@ -52,7 +52,7 @@ const Login = () => {
     mutate({
       ...data,
       user_name: data.user_name.trim(),
-      password: data.password.trim(),
+      // password: data.password.trim(),
     });
     // console.log(data, "submit data to backend");
   }
