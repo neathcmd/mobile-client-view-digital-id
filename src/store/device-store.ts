@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { UAParser } from "ua-parser-js";
-import FingerPrintjs from "@fingerprintjs/fingerprintjs";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 type DeviceInfoType = {
   device_name: string;
@@ -14,40 +14,44 @@ type DeviceInfoType = {
 
 type DeviceState = {
   device: DeviceInfoType | null;
-  fetchDeviceInfo: () => void;
+  fetchDeviceInfo: () => Promise<void>;
 };
 
 export const useDeviceStore = create<DeviceState>()(
   devtools((set) => ({
     device: null,
     fetchDeviceInfo: async () => {
-      const parser = new UAParser();
-      const result = parser.getResult();
-
-      //fingerprint
-      const fp = await FingerPrintjs.load();
-      const fingerPrintResult = await fp.get();
-
-      //fetch ip
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let ip_address = null as any;
       try {
-        const res = await fetch("https://api.ipify.org?format=json");
-        const data: { ip: string } = await res.json();
-        ip_address = data.ip;
-      } catch (error) {
-        console.log(error);
-      }
+        const parser = new UAParser();
+        const result = parser.getResult();
 
-      const info: DeviceInfoType = {
-        browser: result.browser.name || "unknown",
-        os: result.os.name || "unknown",
-        device_name: result.device.vendor || "unknown",
-        fingerprint: fingerPrintResult.visitorId,
-        device_type: result.device.model || "unknown",
-        ip_address,
-      };
-      set({ device: info });
+        // Load FingerprintJS
+        const fp = await FingerprintJS.load();
+        const fingerPrintResult = await fp.get();
+
+        // Fetch IP
+        let ip_address = "unknown";
+        try {
+          const res = await fetch("https://api.ipify.org?format=json");
+          const data = await res.json();
+          ip_address = data.ip;
+        } catch (ipError) {
+          console.error("Failed to fetch IP:", ipError);
+        }
+
+        const info: DeviceInfoType = {
+          browser: result.browser?.name ?? "unknown",
+          os: result.os?.name ?? "unknown",
+          device_name: result.device?.vendor ?? "unknown",
+          device_type: result.device?.model ?? "unknown",
+          fingerprint: fingerPrintResult.visitorId,
+          ip_address,
+        };
+
+        set({ device: info });
+      } catch (error) {
+        console.error("Failed to fetch device info:", error);
+      }
     },
   }))
 );
