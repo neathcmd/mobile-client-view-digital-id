@@ -1,13 +1,20 @@
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-}
+import { CardItem } from "./card-type";
 
-export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  login: (userData: User) => void;
-  logout: () => void;
-  setUser: (userData: User | null) => void;
+export interface IUser {
+  massage: string;
+  data: UserData;
+}
+export interface UserData {
+  id: string;
+  full_name?: string | undefined;
+  user_name: string;
+  email: string;
+  password: string;
+  avatar?: string;
+  is_deleted: boolean;
+  is_active: boolean;
+  role: string[];
+  created_at: string;
+  updated_at: string;
+  idCard: CardItem[];
 }
