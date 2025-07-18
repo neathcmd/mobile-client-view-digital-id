@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import Cookies from "js-cookie";
-import { CookieName } from "@/types/cookie-eunm";
+import { CookieName } from "@/types/cookie-enum";
 
 interface AuthStore {
   accessToken: string;
@@ -16,8 +16,8 @@ export const useAuthStore = create<AuthStore>()(
 
     //setToken after login or register
     setTokens: (accessToken, refreshToken) => {
-      Cookies.set(CookieName.ACCESS_TOKEN, accessToken);
-      Cookies.set(CookieName.REFRESH_TOKEN, refreshToken);
+      Cookies.set(CookieName.ACCESSTOKEN, accessToken);
+      Cookies.set(CookieName.REFRESHTOKEN, refreshToken);
       set(
         {
           accessToken,

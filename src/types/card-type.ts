@@ -1,9 +1,5 @@
-
 import { ReactNode } from "react";
-import { UserData } from "./user-type";
-=======
 import { IUser } from "./user-type";
-
 
 export interface SocialLink {
   id: string;
@@ -18,33 +14,24 @@ export interface SocialLink {
 export type CardType = "Minimal" | "Modern" | "Corporate";
 export type GenderType = "male" | "female";
 export interface CardItem {
-
-  image: string | Blob | undefined;
-  location: ReactNode;
-  email: any;
-  name: ReactNode;
-  company: string;
-  user: string;
-
-  user: IUser;
-
   id: string;
+  user: IUser;
   gender: GenderType;
   dob: string;
   address: string;
   phone: string;
   nationality: string;
-  qr_url?: string;
-  qr_code?: string;
-  card_type?: CardType;
-  is_active: boolean;
-  is_deleted: boolean;
-  theme_color?: string;
-  updated_at: string;
-  created_at: string;
-  socialLinks: SocialLink[];
   job: string;
   bio: string;
   web_site: string;
   company: string;
+  qr_url?: string;
+  qr_code?: string;
+  card_type?: CardType;
+  theme_color?: string;
+  is_active: boolean;
+  is_deleted: boolean;
+  updated_at: string;
+  created_at: string;
+  socialLinks: SocialLink[];
 }

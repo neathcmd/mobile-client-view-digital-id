@@ -1,42 +1,48 @@
 "use client";
 
 import LoadingSpinner from "@/components/loading-spinner";
-import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { userRequest } from "@/lib/api/get-me-api";
 import { useQuery } from "@tanstack/react-query";
-// import { User, Mail } from "lucide-react";
-// import { CardItem } from "@/types/card-type";
-// import CorporateCard from "@/components/profile-card/corporate-card";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-// const OWNER = {
-//   full_name: "Kamado Tanjiro",
-//   position: "Software Developer",
-//   user_name: "kamado",
-//   email: "kamado@example.com",
-// };
+import { CardItem } from "@/types/card-type";
+import CorporateCard from "@/components/profile/corporate-card";
+import MinimalCard from "@/components/profile/minimal-card";
+import ModernCard from "@/components/profile/modern-card";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Camera, Plus } from "lucide-react";
+import { authRequest } from "@/lib/api/auth-api";
+import { useRouter } from "next/navigation";
+import { Mail } from "lucide-react";
 
 const Profile = () => {
-  const { PROFILE } = userRequest();
+  const router = useRouter();
+  const { PROFILE, GET_CARDS } = userRequest();
+  const { AUTH_LOGOUT } = authRequest();
   const { data: me, isLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => PROFILE(),
   });
-  if (isLoading) {
+
+  const { data: userCards, isLoading: cardsLoading } = useQuery({
+    queryKey: ["user-cards"],
+    queryFn: async () => GET_CARDS(),
+  });
+
+  console.log(userCards);
+
+  if (isLoading || cardsLoading) {
     return <LoadingSpinner />;
   }
-  // const infoItems = useMemo(
-  //   () => [
-  //     { label: "Full Name", value: OWNER.full_name },
-  //     { label: "Username", value: OWNER.user_name },
-  //     { label: "Email", value: OWNER.email },
-  //   ],
-  //   []
-  // );
+
+  const infoItems = [
+    { label: "Full Name", value: me?.data.full_name },
+    { label: "Username", value: me?.data.user_name },
+    { label: "Email", value: me?.data.email },
+  ];
 
   const handleLogout = () => {
-    console.log("remove token logout");
+    AUTH_LOGOUT();
+    router.push("/login");
   };
 
   const handleEditProfile = () => {
@@ -44,6 +50,34 @@ const Profile = () => {
       "redirect to edit profile with default value can edit only full name and avatar"
     );
   };
+
+  const handleCreateCard = () => {
+    console.log("Navigate to create card page");
+  };
+
+  const handleAddMoreCard = () => {
+    console.log("Navigate to add more card page");
+  };
+
+  const AvatarProfileImage =
+    "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png";
+
+  const renderCardComponent = (card: CardItem, index: any) => {
+    console.log(card, "someting");
+    switch (card.card_type) {
+      case "Corporate":
+        return <CorporateCard key={card.id} card={card} me={me} idx={index} />;
+      case "Minimal":
+        return <MinimalCard key={card.id} card={card} me={me} idx={index} />;
+      case "Modern":
+        return <ModernCard key={card.id} card={card} me={me} idx={index} />;
+      default:
+        return <MinimalCard key={card.id} card={card} me={me} idx={index} />;
+    }
+  };
+
+  const hasCards = userCards && userCards.cards.length > 0;
+  const hasOneCard = userCards && userCards.cards.length === 1;
 
   return (
     <>
@@ -74,66 +108,31 @@ const Profile = () => {
           <div className="flex justify-center py-12">
             <div className="text-center space-y-6">
               <div className="relative w-32 h-32 mx-auto">
-                {/* <div className="w-full h-full rounded-full bg-white shadow-2xl flex items-center justify-center ring-4 ring-white/30">
-                  <div className="w-28 h-28 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                    <svg
-                      className="w-10 h-10 text-gray-500"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 
-                      1.79-4 4 1.79 4 4 4zm0 2c-2.67 
-                      0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-                      />
-                    </svg>
-                  </div>
-                </div> */}
+                {/* avata image */}
+                <Avatar className="w-full h-full rounded-full bg-white shadow-2xl flex items-center justify-center ring-4 ring-white/30">
+                  <AvatarImage
+                    src={AvatarProfileImage}
+                    alt="@evilrabbit"
+                    className="w-20 h-20 text-gray-500"
+                  />
+                </Avatar>
 
                 {/* Upload Photo */}
-                {/* <button
+                <Button
                   type="button"
                   className="absolute bottom-0 right-1/2 translate-x-1/2 translate-y-1/2 p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-md transition-colors focus:outline-none"
                   aria-label="Upload profile photo"
                 >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 9a2 2 0 012-2h.93a2 2 0 
-                      001.664-.89l.812-1.22A2 2 0 
-                      0110.07 4h3.86a2 2 0 
-                      011.664.89l.812 1.22A2 2 0 
-                      0018.07 7H19a2 2 0 012 2v9a2 2 
-                      0 01-2 2H5a2 2 0 01-2-2V9z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </button> */}
+                  <Camera className="w-4 h-4" />
+                </Button>
               </div>
 
-              {/* <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
-                <AvatarImage src={me?.data?.avatar} alt="@evilrabbit" />
-                <AvatarFallback>{me?.data?.full_name}</AvatarFallback>
-                <AvatarFallback> {OWNER.full_name}</AvatarFallback>
-              </Avatar> */}
-
-              <h1 className="text-3xl font-bold text-white tracking-tight">
-                {me?.data.full_name}
-              </h1>
-              <p className="text-blue-100 text-sm">{me?.data.user_name}</p>
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold text-white tracking-tight">
+                  {me?.data.full_name}
+                </h1>
+                <p className="text-blue-100 text-md">{me?.data.user_name}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -155,16 +154,16 @@ const Profile = () => {
                 >
                   Profile Information
                 </h2>
-                <button
+                <Button
                   onClick={handleEditProfile}
                   type="button"
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none"
                 >
                   Edit Profile
-                </button>
+                </Button>
               </div>
 
-              {/* <ul className="space-y-4">
+              <ul className="space-y-4">
                 {infoItems.map(({ label, value }) => (
                   <li
                     key={label}
@@ -176,69 +175,101 @@ const Profile = () => {
                     <span className="text-sm text-gray-900">{value}</span>
                   </li>
                 ))}
-              </ul> */}
+              </ul>
             </section>
 
-            {/* Create Card Section */}
-            <section
-              aria-labelledby="create-card-heading"
-              className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
-            >
-              <div className="text-center max-w-2xl mx-auto">
-                <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                  <svg
-                    className="w-8 h-8 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                </div>
-                <h2
-                  id="create-card-heading"
-                  className="text-xl font-semibold text-gray-900 mb-2"
-                >
-                  Create Your Digital ID Card
-                </h2>
-                <p className="text-sm text-gray-600 mb-6">
-                  Generate a secure digital ID card with your verified
-                  information. Your card will be ready for download and sharing.
-                </p>
-
-                <button
-                  type="button"
-                  className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg text-base font-medium transition-colors shadow-md hover:shadow-lg focus:outline-none"
-                >
-                  <div className="flex items-center justify-center">
+            {/* Cards Section */}
+            {!hasCards ? (
+              /* Create Card Section - Show when user has no cards */
+              <section
+                aria-labelledby="create-card-heading"
+                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+              >
+                <div className="text-center max-w-2xl mx-auto">
+                  <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-4">
                     <svg
-                      className="w-5 h-5 mr-2"
+                      className="w-8 h-8 text-blue-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M10 6H5a2 2 0 00-2 2v9a2 2 
-                        0 002 2h14a2 2 0 002-2V8a2 2 
-                        0 00-2-2h-5m-4 0V4a2 2 0 114 
-                        0v2m-4 0a2 2 0 104 0m-4 0V4a2 
-                        2 0 014 0v2"
+                        d="M12 4v16m8-8H4"
                       />
                     </svg>
-                    Create Card
                   </div>
-                </button>
-              </div>
-            </section>
+                  <h2
+                    id="create-card-heading"
+                    className="text-xl font-semibold text-gray-900 mb-2"
+                  >
+                    Create Your Digital ID Card
+                  </h2>
+                  <p className="text-sm text-gray-600 mb-6">
+                    Generate a secure digital ID card with your verified
+                    information. Your card will be ready for download and
+                    sharing.
+                  </p>
+
+                  <Button
+                    onClick={handleCreateCard}
+                    type="button"
+                    className="bg-blue-600 hover:bg-blue-700 text-white py-6 px-6 rounded-lg text-base font-medium transition-colors shadow-md hover:shadow-lg focus:outline-none"
+                  >
+                    <div className="flex items-center justify-center">
+                      <Mail className="w-5 h-5 mr-2" />
+                      Create Card
+                    </div>
+                  </Button>
+                </div>
+              </section>
+            ) : (
+              /* User Cards Section - Show when user has cards */
+              <section
+                aria-labelledby="user-cards-heading"
+                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h2
+                    id="user-cards-heading"
+                    className="text-xl font-semibold text-gray-900"
+                  >
+                    Your Digital Cards
+                  </h2>
+                  {hasOneCard && (
+                    <Button
+                      onClick={handleAddMoreCard}
+                      type="button"
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none flex items-center"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add More Card
+                    </Button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* {userCards.cards.map(
+                    (card: CardItem, index: number) => {
+                      return <div>Hello world</div>;
+                    }
+                    // renderCardComponent(card, index)
+                  )} */}
+                  <div>
+                    {userCards.cards.map((res, i) => {
+                      return (
+                        <div>
+                          <h1>Hello world</h1>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+            )}
           </main>
         </div>
       </div>
@@ -246,4 +277,4 @@ const Profile = () => {
   );
 };
 
-export default memo(Profile);
+export default Profile;

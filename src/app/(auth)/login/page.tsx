@@ -1,86 +1,138 @@
 "use client";
-import { useState } from "react";
+
+import React, { useState, useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
+import { useDeviceStore } from "@/store/device-store";
+// import axios from "@/lib/api/request";
+
 import { Button } from "@/components/ui/button";
-// import { AUTH_LOGIN } from "@/lib/api/auth-api";
-import { authRequest } from "@/lib/api/auth-api";
-import { useMutation } from "@tanstack/react-query";
+import { User, Lock, Eye, EyeOff } from "lucide-react";
 import {
   Form,
   FormControl,
+  //   FormDescription,
   FormField,
   FormItem,
-  // FormLabel,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  INPUT_STYLE,
+  FORM_STYLE,
+  ICON_STYLE,
+  AUTH_HEADER_STYLE,
+} from "@/constants/form-styling";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import z from "zod";
-
-import { FiUser, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import { AuthLoginType } from "@/types/auth-type";
+import Link from "next/link";
+import { authRequest } from "@/lib/api/auth-api";
+import { useMutation } from "@tanstack/react-query";
+import { AuthLoginType, AuthRegisterType } from "@/types/auth-type";
+// import { AxiosError } from "axios";
 
 const LoginSchema = z.object({
-  user_name: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  password: z.string().min(2, {
-    message: "Password must be at least 2 characters.",
-  }),
+  user_name: z.string().nonempty({ message: "Username is required" }),
+  password: z.string().nonempty({ message: "Password is required." }),
 });
 
-const Login = () => {
-  const { AUTH_LOGIN } = authRequest();
+const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const { device, fetchDeviceInfo } = useDeviceStore();
+  console.log(device);
+  const [serverError, setServerError] = useState("");
+
+  const { AUTH_LOGIN } = authRequest();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    fetchDeviceInfo();
+  }, [fetchDeviceInfo]);
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
+      //   full_name: "",
       user_name: "",
+      //   email: "",
       password: "",
     },
   });
 
+  // const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const { mutate, isPending } = useMutation({
-    mutationKey: ["register"],
+    mutationKey: ["login"],
     mutationFn: (payload: AuthLoginType) => AUTH_LOGIN(payload),
     onSuccess: (data) => {
+      router.push("/");
       console.log(data, "===data===");
     },
+    onError: (error) => {
+      console.log("Login failed", error);
+    },
+    // onSuccess: async (data: any) => {
+    //   try {
+    //     // ✅ Call /api/user/me immediately after login
+    //     const meRes = await axios({
+    //       url: `${BASE_URL}/user/me`,
+    //       method: "POST",
+    //     });
+    //     console.log("User info from /me:", meRes.data);
+
+    //     // ✅ Only redirect if /me works (optional)
+    //     router.push("/");
+    //   } catch (err) {
+    //     console.error("Calling /me failed after login:", err);
+    //   }
+
+    //   console.log(data, "===login response===");
+    // },
+    // onError: (error: AxiosError) => {
+    //   if (error.response?.status === 401) {
+    //     setServerError("invalid username or password");
+    //   } else {
+    //     setServerError("something went wrong");
+    //   }
+    // },
   });
 
+  // submit handler
   function onSubmit(data: z.infer<typeof LoginSchema>) {
+    setServerError("");
     mutate({
       ...data,
       user_name: data.user_name.trim(),
-      // password: data.password.trim(),
     });
-    // console.log(data, "submit data to backend");
   }
 
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-green-50 px-4">
-      <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-md">
-        <h2 className="text-2xl font-semibold text-green-800 text-center">
-          Log in
-        </h2>
-        <p className="text-sm text-gray-500 text-center mb-6">
-          Fresh Food Delivered.
-        </p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-4">
+      <div className="w-full max-w-md">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className={FORM_STYLE}>
+            <div className="text-center mb-8">
+              <h1 className={AUTH_HEADER_STYLE}>Welcome back</h1>
+            </div>
+
             <FormField
               control={form.control}
               name="user_name"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Username</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <FiUser className="absolute left-3 top-3.5 text-gray-400" />
+                      <User className={ICON_STYLE} />
                       <Input
-                        type="text"
-                        placeholder="Username"
-                        className="pl-10"
+                        placeholder="Choose a username"
                         {...field}
+                        className={INPUT_STYLE}
+                        disabled={isPending}
                       />
                     </div>
                   </FormControl>
@@ -88,53 +140,61 @@ const Login = () => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <FiLock className="absolute left-3 top-3.5 text-gray-400" />
+                      <Lock className={ICON_STYLE} />
                       <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder="Password"
-                        className="pl-10 pr-10"
+                        placeholder="Create a strong password"
                         {...field}
+                        className={INPUT_STYLE}
+                        // disabled={isPending}
                       />
-                      <div
-                        className="absolute right-3 top-3.5 text-gray-400 cursor-pointer"
-                        onClick={() => setShowPassword(!showPassword)}
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                        // disabled={isPending}
                       >
-                        {showPassword ? <FiEyeOff /> : <FiEye />}
-                      </div>
+                        {showPassword ? (
+                          <EyeOff className="w-5 h-5" />
+                        ) : (
+                          <Eye className="w-5 h-5" />
+                        )}
+                      </button>
                     </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="flex items-center justify-between text-sm text-gray-600">
-              <label className="flex items-center space-x-2">
-                <input type="checkbox" className="form-checkbox" />
-                <span>Remember me</span>
-              </label>
-              <a href="#" className="text-green-700 hover:underline">
-                Forget your password?
-              </a>
-            </div>
-            <Button
-              type="submit"
-              className="w-full bg-green-700 hover:bg-green-800"
-            >
-              Log in
+
+            {serverError && (
+              <div className="text-red-500 text-sm">{serverError}</div>
+            )}
+
+            <Button type="submit" className="w-full mt-6" disabled={isPending}>
+              {isPending ? "Login..." : "Login"}
             </Button>
-            <p className="text-sm text-center text-gray-600 mt-4">
-              Don’t have an account?{" "}
-              <a href="/register" className="text-green-700 hover:underline">
-                Register here!
-              </a>
-            </p>
+
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
+                Don't have an account?{" "}
+                <Link
+                  href="/register"
+                  className="text-green-700 font-medium hover:text-green-800 hover:underline transition-colors"
+                >
+                  Register here
+                </Link>
+              </p>
+            </div>
           </form>
         </Form>
       </div>
@@ -142,4 +202,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginForm;

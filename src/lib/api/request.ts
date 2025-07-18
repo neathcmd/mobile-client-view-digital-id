@@ -13,24 +13,6 @@ const axiosInstance = axios.create({
   },
 });
 
-// function remove token from cookie
-const removeCookie = (name: any, path = "/", domain = "") => {
-  let cookieString = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
-  if (domain) {
-    cookieString += ` domain=${domain};`;
-  }
-  document.cookie = cookieString;
-};
-
-// function handle logout
-const handleLogout = () => {
-  removeCookie(CookieName.ACCESSTOKEN);
-  removeCookie(CookieName.REFRESHTOKEN);
-
-  //Redirect to login
-  window.location.href = "/login";
-};
-
 //Add Request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -68,7 +50,7 @@ axiosInstance.interceptors.response.use(
         } catch (error: any) {
           if (error.response && error.response.data) {
             // make logout function or remove token
-            handleLogout();
+
             return Promise.reject(error.response.data);
           }
           return Promise.reject(error);
@@ -79,7 +61,7 @@ axiosInstance.interceptors.response.use(
     }
     if (error.respone && error.response.status === 401) {
       // write logout logic if 401 error
-      handleLogout();
+
       return Promise.reject(error.response.data);
     }
 
