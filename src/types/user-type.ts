@@ -1,6 +1,10 @@
+import { ReactNode } from "react";
 import { CardItem } from "./card-type";
 
 export interface IUser {
+  full_name: ReactNode;
+  massage: string;
+
   message: string;
   data: UserData;
 }

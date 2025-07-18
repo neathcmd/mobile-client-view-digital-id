@@ -1,4 +1,9 @@
+
+import { ReactNode } from "react";
+import { UserData } from "./user-type";
+=======
 import { IUser } from "./user-type";
+
 
 export interface SocialLink {
   id: string;
@@ -13,7 +18,16 @@ export interface SocialLink {
 export type CardType = "Minimal" | "Modern" | "Corporate";
 export type GenderType = "male" | "female";
 export interface CardItem {
+
+  image: string | Blob | undefined;
+  location: ReactNode;
+  email: any;
+  name: ReactNode;
+  company: string;
+  user: string;
+
   user: IUser;
+
   id: string;
   gender: GenderType;
   dob: string;
