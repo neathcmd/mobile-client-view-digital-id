@@ -1,5 +1,6 @@
 "use client";
 
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { userRequest } from "@/lib/api/get-me-api";
@@ -64,7 +65,6 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-
         {/* Cards List */}
         <div>
           <div>
@@ -78,6 +78,4 @@ export default function ProfilePage() {
           </div> */}
         </div>
       </div>
-    </div>
-  );
 }

@@ -1,17 +1,17 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
+import React, { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+// import { toast } from "sonner";
 import { z } from "zod";
+import { useDeviceStore } from "@/store/device-store";
+import { AuthRegisterType } from "@/types/auth-type";
+import { authRequest } from "@/lib/api/auth-api";
+
+import { Button } from "@/components/ui/button";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import Link from "next/link";
-import React, { useState } from "react";
-import {
-  INPUT_STYLE,
-  FORM_STYLE,
-  ICON_STYLE,
-  AUTH_HEADER_STYLE,
-} from "@/constants/styling";
 import {
   Form,
   FormControl,
@@ -20,8 +20,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  INPUT_STYLE,
+  FORM_STYLE,
+  ICON_STYLE,
+  AUTH_HEADER_STYLE,
+} from "@/constants/form-styling";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const RegisterSchema = z.object({
   full_name: z.string().nonempty({
@@ -32,7 +39,7 @@ const RegisterSchema = z.object({
 
   email: z
     .string()
-    .min(1, { message: "Email is required." })
+    .nonempty({ message: "Email is required." })
     .email({ message: "Please enter a valid email address." }),
 
   password: z
@@ -44,13 +51,15 @@ const RegisterSchema = z.object({
   // }),
 });
 
-type RegisterFormData = z.infer<typeof RegisterSchema>;
-
-const RegisterPage: React.FC = () => {
+const RegisterForm = () => {
+  const { AUTH_REGISTER } = authRequest();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { device, fetchDeviceInfo } = useDeviceStore();
+  console.log(device);
 
-  const form = useForm<RegisterFormData>({
+  const router = useRouter();
+
+  const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       full_name: "",
@@ -58,33 +67,38 @@ const RegisterPage: React.FC = () => {
       email: "",
       password: "",
     },
-    // mode: "onChange",
   });
 
-  const onSubmit = async (data: RegisterFormData) => {
-    setIsLoading(true);
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+  useEffect(() => {
+    fetchDeviceInfo();
+  }, [fetchDeviceInfo]);
 
-      // Remove confirmPassword before sending to API
-      const { ...registrationData } = data;
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["register"],
+    mutationFn: (payload: AuthRegisterType) => AUTH_REGISTER(payload),
+    onSuccess: (data) => {
+      // redirect to profile page
+      router.push("/");
+      console.log(data, "===data===");
+    },
+    onError: (error) => {
+      console.error("Registration failed:", error);
+    },
+  });
 
-      console.log("Registration data:", registrationData);
-
-      // Handle successful registration here
-      // e.g., redirect to verification page or login page
-    } catch (error) {
-      console.error("Registration error:", error);
-      // Handle registration error
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // submit handler
+  function onSubmit(data: z.infer<typeof RegisterSchema>) {
+    mutate({
+      ...data,
+      device_name: device?.device_name,
+      device_type: device?.device_type,
+      os: device?.os,
+      browser: device?.browser,
+      ip_address: device?.ip_address,
+    });
+  }
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
-  // const toggleConfirmPasswordVisibility = () =>
-  //   setShowConfirmPassword(!showConfirmPassword);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-4">
@@ -93,11 +107,10 @@ const RegisterPage: React.FC = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className={FORM_STYLE}>
             <div className="text-center mb-8">
               <h1 className={AUTH_HEADER_STYLE}>Create Account</h1>
-              <p className="text-gray-600 mt-2">
+              {/* <p className="text-gray-600 mt-2">
                 Join us and get started today
-              </p>
+              </p> */}
             </div>
-
             <FormField
               control={form.control}
               name="full_name"
@@ -111,7 +124,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="Enter your full name"
                         {...field}
                         className={INPUT_STYLE}
-                        disabled={isLoading}
+                        disabled={isPending}
                       />
                     </div>
                   </FormControl>
@@ -119,7 +132,6 @@ const RegisterPage: React.FC = () => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="user_name"
@@ -133,7 +145,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="Choose a username"
                         {...field}
                         className={INPUT_STYLE}
-                        disabled={isLoading}
+                        disabled={isPending}
                       />
                     </div>
                   </FormControl>
@@ -141,13 +153,12 @@ const RegisterPage: React.FC = () => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email Address</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Mail className={ICON_STYLE} />
@@ -156,7 +167,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="Enter your email"
                         {...field}
                         className={INPUT_STYLE}
-                        disabled={isLoading}
+                        disabled={isPending}
                       />
                     </div>
                   </FormControl>
@@ -164,7 +175,6 @@ const RegisterPage: React.FC = () => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="password"
@@ -179,13 +189,13 @@ const RegisterPage: React.FC = () => {
                         placeholder="Create a strong password"
                         {...field}
                         className={INPUT_STYLE}
-                        disabled={isLoading}
+                        disabled={isPending}
                       />
                       <button
                         type="button"
                         onClick={togglePasswordVisibility}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                        disabled={isLoading}
+                        disabled={isPending}
                       >
                         {showPassword ? (
                           <EyeOff className="w-5 h-5" />
@@ -200,44 +210,17 @@ const RegisterPage: React.FC = () => {
               )}
             />
 
-            {/* <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Lock className={ICON_STYLE} />
-                      <Input
-                        type={showConfirmPassword ? "text" : "password"}
-                        placeholder="Confirm your password"
-                        {...field}
-                        className={INPUT_STYLE}
-                        disabled={isLoading}
-                      />
-                      <button
-                        type="button"
-                        onClick={toggleConfirmPasswordVisibility}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                        disabled={isLoading}
-                      >
-                        {showConfirmPassword ? (
-                          <EyeOff className="w-5 h-5" />
-                        ) : (
-                          <Eye className="w-5 h-5" />
-                        )}
-                      </button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
-
-            <Button type="submit" className="w-full mt-6" disabled={isLoading}>
-              {isLoading ? "Creating Account..." : "Create Account"}
+            <Button
+              type="submit"
+              className="w-full mt-6"
+              disabled={isPending}
+              // onClick={onSubmit}
+            >
+              {isPending ? "Creating Account..." : "Create Account"}
             </Button>
+            {/* <Button type="submit" onClick={onSubmit} className="w-full">
+              Create Account
+            </Button> */}
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
@@ -250,22 +233,6 @@ const RegisterPage: React.FC = () => {
                 </Link>
               </p>
             </div>
-
-            {/* <div className="mt-4 text-center">
-              <p className="text-xs text-gray-500">
-                By creating an account, you agree to our{" "}
-                <Link href="/terms" className="text-green-700 hover:underline">
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link
-                  href="/privacy"
-                  className="text-green-700 hover:underline"
-                >
-                  Privacy Policy
-                </Link>
-              </p>
-            </div> */}
           </form>
         </Form>
       </div>
@@ -273,4 +240,4 @@ const RegisterPage: React.FC = () => {
   );
 };
 
-export default RegisterPage;
+export default RegisterForm;
