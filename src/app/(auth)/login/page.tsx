@@ -1,19 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import { useDeviceStore } from "@/store/device-store";
-// import axios from "@/lib/api/request";
-
 import { Button } from "@/components/ui/button";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
 import {
   Form,
   FormControl,
-  //   FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,8 +25,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { authRequest } from "@/lib/api/auth-api";
 import { useMutation } from "@tanstack/react-query";
-import { AuthLoginType, AuthRegisterType } from "@/types/auth-type";
-// import { AxiosError } from "axios";
+import { AuthLoginType } from "@/types/auth-type";
 
 const LoginSchema = z.object({
   user_name: z.string().nonempty({ message: "Username is required" }),
@@ -39,72 +34,39 @@ const LoginSchema = z.object({
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { device, fetchDeviceInfo } = useDeviceStore();
-  console.log(device);
   const [serverError, setServerError] = useState("");
 
   const { AUTH_LOGIN } = authRequest();
 
   const router = useRouter();
 
-  useEffect(() => {
-    fetchDeviceInfo();
-  }, [fetchDeviceInfo]);
-
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      //   full_name: "",
       user_name: "",
-      //   email: "",
       password: "",
     },
   });
-
-  // const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["login"],
     mutationFn: (payload: AuthLoginType) => AUTH_LOGIN(payload),
     onSuccess: (data) => {
-      router.push("/");
+      router.push("/profile");
       console.log(data, "===data===");
     },
     onError: (error) => {
       console.log("Login failed", error);
     },
-    // onSuccess: async (data: any) => {
-    //   try {
-    //     // ✅ Call /api/user/me immediately after login
-    //     const meRes = await axios({
-    //       url: `${BASE_URL}/user/me`,
-    //       method: "POST",
-    //     });
-    //     console.log("User info from /me:", meRes.data);
-
-    //     // ✅ Only redirect if /me works (optional)
-    //     router.push("/");
-    //   } catch (err) {
-    //     console.error("Calling /me failed after login:", err);
-    //   }
-
-    //   console.log(data, "===login response===");
-    // },
-    // onError: (error: AxiosError) => {
-    //   if (error.response?.status === 401) {
-    //     setServerError("invalid username or password");
-    //   } else {
-    //     setServerError("something went wrong");
-    //   }
-    // },
   });
 
-  // submit handler
+  // submit login handler
   function onSubmit(data: z.infer<typeof LoginSchema>) {
     setServerError("");
     mutate({
       ...data,
       user_name: data.user_name.trim(),
+      password: data.password.trim(),
     });
   }
 

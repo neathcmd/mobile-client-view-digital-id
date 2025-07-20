@@ -9,10 +9,9 @@ import CorporateCard from "@/components/profile/corporate-card";
 import MinimalCard from "@/components/profile/minimal-card";
 import ModernCard from "@/components/profile/modern-card";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Camera, Plus } from "lucide-react";
+import { Camera, Plus, Mail } from "lucide-react";
 import { authRequest } from "@/lib/api/auth-api";
 import { useRouter } from "next/navigation";
-import { Mail } from "lucide-react";
 
 const Profile = () => {
   const router = useRouter();
@@ -28,7 +27,7 @@ const Profile = () => {
     queryFn: async () => GET_CARDS(),
   });
 
-  console.log(userCards);
+  // console.log(userCards);
 
   if (isLoading || cardsLoading) {
     return <LoadingSpinner />;
@@ -40,30 +39,29 @@ const Profile = () => {
     { label: "Email", value: me?.data.email },
   ];
 
+  // handler function
   const handleLogout = () => {
     AUTH_LOGOUT();
     router.push("/login");
   };
 
   const handleEditProfile = () => {
-    console.log(
-      "redirect to edit profile with default value can edit only full name and avatar"
-    );
+    console.log("===pop up edit profile input fields with default value===");
   };
 
   const handleCreateCard = () => {
-    console.log("Navigate to create card page");
+    console.log("===Navigate to create card page===");
   };
 
   const handleAddMoreCard = () => {
-    console.log("Navigate to add more card page");
+    console.log("===Navigate to create card input fields===");
   };
 
   const AvatarProfileImage =
     "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png";
 
   const renderCardComponent = (card: CardItem, index: any) => {
-    console.log(card, "someting");
+    // console.log(card, "===card user data===");
     switch (card.card_type) {
       case "Corporate":
         return <CorporateCard key={card.id} card={card} me={me} idx={index} />;
@@ -233,12 +231,6 @@ const Profile = () => {
                 className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h2
-                    id="user-cards-heading"
-                    className="text-xl font-semibold text-gray-900"
-                  >
-                    Your Digital Cards
-                  </h2>
                   {hasOneCard && (
                     <Button
                       onClick={handleAddMoreCard}
@@ -252,21 +244,9 @@ const Profile = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {/* {userCards.cards.map(
-                    (card: CardItem, index: number) => {
-                      return <div>Hello world</div>;
-                    }
-                    // renderCardComponent(card, index)
-                  )} */}
-                  <div>
-                    {userCards.cards.map((res, i) => {
-                      return (
-                        <div>
-                          <h1>Hello world</h1>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  {userCards.cards.map((card: CardItem, index: number) =>
+                    renderCardComponent(card, index)
+                  )}
                 </div>
               </section>
             )}

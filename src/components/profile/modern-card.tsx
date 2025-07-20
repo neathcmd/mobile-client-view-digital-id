@@ -25,7 +25,7 @@ export default function ModernCard({
               alt="User"
               className="rounded-full object-cover"
             />
-            <AvatarFallback>{me.full_name}</AvatarFallback>
+            <AvatarFallback>{me?.data.full_name}</AvatarFallback>
           </Avatar>
         </div>
       </div>
@@ -35,10 +35,10 @@ export default function ModernCard({
       {/* Card Content */}
       <div className="p-6 text-center space-y-3">
         <h2 className="text-2xl font-bold text-gray-800">
-          {me.full_name || "User Name"}
+          {me?.data.full_name || "User Name"}
         </h2>
         <p className="text-gray-500 text-sm">
-          {me.email || "email@example.com"}
+          {me?.data.email || "email@example.com"}
         </p>
 
         <div className="border-t border-gray-200 pt-4 mt-4 space-y-1">
@@ -48,7 +48,9 @@ export default function ModernCard({
           <p className="text-gray-600 text-sm">
             {card.bio || "Bio not provided."}
           </p>
-          <p className="text-gray-600 text-sm">{card.addres || "PSE School"}</p>
+          <p className="text-gray-600 text-sm">
+            {card.address || "PSE School"}
+          </p>
         </div>
       </div>
     </div>

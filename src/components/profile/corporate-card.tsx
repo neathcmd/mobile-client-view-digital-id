@@ -1,7 +1,7 @@
-import { CardItem } from "@/types/card-type";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Mail } from "lucide-react";
 import { QRCodeCanvas } from "qrcode.react";
+import { User, CardItem } from "@/types/card-type";
 
 export default function CorporateCard({
   me,
@@ -12,7 +12,17 @@ export default function CorporateCard({
   card: CardItem;
   idx: number;
 }) {
-  const qrLink = card.link || "https://yourwebsite.com";
+  // Use qr_url from API, fallback to a default if null
+  const qrLink = card.qr_url || "https://yourwebsite.com";
+
+  // Correct nationality and social link platform
+  const correctedNationality =
+    card.nationality === "japanense" ? "Japanese" : card.nationality;
+  const socialLinks = card.socialLinks.map((link) => ({
+    ...link,
+    platform: link.platform === "facebooks" ? "facebook" : link.platform,
+    url: link.url === "facebook.coms" ? "https://facebook.com" : link.url,
+  }));
 
   return (
     <div
@@ -37,32 +47,40 @@ export default function CorporateCard({
 
       {/* Name and Email */}
       <h2 className="text-2xl font-bold text-center mb-1">
-        {me.full_name || "Soryalyza"}
+        {me.full_name || "Unknown User"}
       </h2>
       <p className="text-center opacity-80 mb-4">
         <Mail className="inline mr-1" />
-        {me.email || "lyza@example.com"}
+        {me.email || "no-email@example.com"}
       </p>
 
       {/* Card Info */}
       <div className="bg-white rounded-2xl shadow-lg border border-purple-200 p-6 space-y-4 text-gray-700">
         <div className="text-center">
           <h2 className="text-xl font-bold text-purple-700">
-            {card.job || "Software Developer"}
+            {card.job || "Unknown Position"}
           </h2>
           <p className="text-sm text-gray-500 mt-1">
-            {card.bio || "I love building beautiful, functional UIs."}
+            {card.bio || "No bio available."}
           </p>
         </div>
 
         <div className="grid gap-3 text-sm">
           <div className="flex items-center gap-2">
             <span className="font-medium text-purple-600">📍 Address:</span>
-            <span>{card.addres || "PSE School"}</span>
+            <span>{card.address || "Unknown Address"}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-medium text-purple-600">👤 Gender:</span>
-            <span>{card.gender || "Female"}</span>
+            <span>{card.gender || "Unknown"}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium text-purple-600">🌍 Nationality:</span>
+            <span>{correctedNationality || "Unknown"}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium text-purple-600">📞 Phone:</span>
+            <span>{card.phone || "Unknown"}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-medium text-purple-600">🔗 Website:</span>
@@ -93,8 +111,28 @@ export default function CorporateCard({
         )}
       </div>
 
-      {/* Action Buttons - DO NOT TOUCH */}
+      {/* Social Links */}
       <div className="space-y-3 mt-5">
+        {socialLinks
+          .filter((link) => !link.is_deleted)
+          .map((link) => (
+            <a
+              key={link.id}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-white/20 hover:bg-white/30 rounded-xl py-3 font-semibold flex items-center justify-center gap-3 transition"
+            >
+              <img
+                src={link.icon}
+                alt={`${link.platform} icon`}
+                className="h-5 w-5"
+              />
+              {link.platform.charAt(0).toUpperCase() + link.platform.slice(1)}
+            </a>
+          ))}
+
+        {/* Keep original action buttons if needed */}
         <button className="w-full bg-white/20 hover:bg-white/30 rounded-xl py-3 font-semibold flex items-center justify-center gap-3 transition">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -129,18 +167,6 @@ export default function CorporateCard({
             />
           </svg>
           Email
-        </button>
-
-        <button className="w-full bg-white/20 hover:bg-white/30 rounded-xl py-3 font-semibold flex items-center justify-center gap-3 transition">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2zm.2 2A3.75 3.75 0 004 7.75v8.5A3.75 3.75 0 007.75 20h8.5a3.75 3.75 0 003.75-3.75v-8.5A3.75 3.75 0 0016.25 4h-8.3zm4.25 3a4.75 4.75 0 110 9.5 4.75 4.75 0 010-9.5zm0 2.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5zm3.1-4.1a1.05 1.05 0 11-2.1 0 1.05 1.05 0 012.1 0z" />
-          </svg>
-          Instagram
         </button>
       </div>
     </div>
