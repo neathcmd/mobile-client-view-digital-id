@@ -55,7 +55,7 @@ const RegisterForm = () => {
   const { AUTH_REGISTER } = authRequest();
   const [showPassword, setShowPassword] = useState(false);
   const { device, fetchDeviceInfo } = useDeviceStore();
-  console.log(device);
+  // console.log(device, fetchDeviceInfo, "===device===");
 
   const router = useRouter();
 
@@ -78,7 +78,8 @@ const RegisterForm = () => {
     mutationFn: (payload: AuthRegisterType) => AUTH_REGISTER(payload),
     onSuccess: (data) => {
       // redirect to profile page
-      router.push("/profile");
+      // router.push("/profile");
+      router.push("/");
       console.log(data, "===data===");
     },
     onError: (error) => {

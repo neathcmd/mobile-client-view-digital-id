@@ -52,7 +52,7 @@ const LoginForm = () => {
     mutationKey: ["login"],
     mutationFn: (payload: AuthLoginType) => AUTH_LOGIN(payload),
     onSuccess: (data) => {
-      router.push("/profile");
+      router.push("/");
       console.log(data, "===data===");
     },
     onError: (error) => {
