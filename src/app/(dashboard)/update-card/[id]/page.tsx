@@ -83,7 +83,7 @@ export default function ProfileForm({
       payload: CreateCardType;
     }) => UPDATE_CARD(id, payload),
     onSuccess: () => {
-      router.push("/profile");
+      router.push("/");
     },
   });
 

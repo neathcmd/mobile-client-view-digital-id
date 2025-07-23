@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { Edit3 } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+// import Link from "next/link";
 
 const Profile = () => {
   const [error, setError] = useState("");
@@ -49,8 +50,16 @@ const Profile = () => {
     router.push("/login");
   };
 
-  const showEditProfileDialog = () => {
-    console.log("===pop up edit profile input fields with default value===");
+  const showEditProfileDialog = (id: any) => {
+    try {
+      router.push(`/user/update-user/${id}`);
+    } catch (error) {
+      toast.message("something wrong");
+      console.log(
+        "===pop up edit profile input fields with default value===",
+        error
+      );
+    }
   };
 
   const navigateToCardCreation = () => {
@@ -208,6 +217,7 @@ const Profile = () => {
                       />
                     </svg>
                   </div>
+
                   <h2
                     id="create-card-heading"
                     className="text-xl font-semibold text-gray-900 mb-2"

@@ -14,7 +14,7 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push("/login");
+      router.push("/");
       // console.log("lgout", isAuthenticated);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
