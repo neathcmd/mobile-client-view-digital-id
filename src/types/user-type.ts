@@ -1,12 +1,9 @@
-import { ReactNode } from "react";
-import { CardItem } from "./card-type";
+import { CardType, GenderType, SocialLink } from "./card-type";
 
 export interface IUser {
-  full_name: ReactNode;
-  massage: string;
-
   message: string;
   data: UserData;
+  user_name: string;
 }
 export interface UserData {
   id: string;
@@ -21,4 +18,26 @@ export interface UserData {
   created_at: string;
   updated_at: string;
   idCard: CardItem[];
+}
+export interface CardItem {
+  user: IUser;
+  id: string;
+  gender: GenderType;
+  dob: string;
+  address: string;
+  phone: string;
+  nationality: string;
+  qr_url?: string;
+  qr_code?: string;
+  card_type?: CardType;
+  is_active: boolean;
+  is_deleted: boolean;
+  theme_color?: string;
+  updated_at: string;
+  created_at: string;
+  socialLinks: SocialLink[];
+  job: string;
+  bio: string;
+  web_site: string;
+  company: string;
 }

@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { CardContent } from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-// import { CardItem, IUser } from "@/types/user-type";
+import { CardItem, IUser } from "@/types/user-type";
 import Link from "next/link";
 
 const ModernCard = ({
@@ -13,8 +13,7 @@ const ModernCard = ({
 }: {
   // me: IUser;
   me: any;
-  // card: CardItem;
-  card: any;
+  card: CardItem;
   idx: number;
 }) => {
   return (
@@ -167,7 +166,7 @@ const ModernCard = ({
                     <Download className="w-4 h-4 mr-2" />
                     Save Contact
                   </Button>
-                  {card.socialLinks.map((res: any, idx: number) => {
+                  {card.socialLinks.map((res, idx: number) => {
                     return (
                       <div className="" key={idx}>
                         <Button

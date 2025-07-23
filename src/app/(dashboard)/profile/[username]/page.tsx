@@ -4,7 +4,7 @@ import LoadingSpinner from "@/components/loading-spinner";
 import { Button } from "@/components/ui/button";
 import { userRequest } from "@/lib/api/get-me-api";
 import { useQuery } from "@tanstack/react-query";
-import { CardItem } from "@/types/card-type";
+import { CardItem } from "@/types/user-type";
 import CorporateCard from "@/components/cards/corporate-card";
 import MinimalCard from "@/components/cards/minimal-card";
 import ModernCard from "@/components/cards/modern-card";
@@ -12,7 +12,6 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Plus, Mail } from "lucide-react";
 import { authRequest } from "@/lib/api/auth-api";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 const Profile = () => {
   const router = useRouter();
@@ -54,10 +53,9 @@ const Profile = () => {
     console.log("===Navigate to create card page===");
   };
 
-  // const handleAddMoreCard = () => {
-  //   router.push("/create-card");
-  //   console.log("===Navigate to create card input fields===");
-  // };
+  const handleAddMoreCard = () => {
+    console.log("===Navigate to create card input fields===");
+  };
 
   const AvatarProfileImage =
     "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png";
@@ -234,15 +232,14 @@ const Profile = () => {
               >
                 <div className="flex items-center justify-between mb-6">
                   {hasOneCard && (
-                    <Link
-                      // onClick={handleAddMoreCard}
-                      // type="button"
-                      href="/create-card"
+                    <Button
+                      onClick={handleAddMoreCard}
+                      type="button"
                       className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none flex items-center"
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Add More Card
-                    </Link>
+                    </Button>
                   )}
                 </div>
 

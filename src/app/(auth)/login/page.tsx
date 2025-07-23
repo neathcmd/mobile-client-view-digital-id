@@ -26,6 +26,7 @@ import Link from "next/link";
 import { authRequest } from "@/lib/api/auth-api";
 import { useMutation } from "@tanstack/react-query";
 import { AuthLoginType } from "@/types/auth-type";
+import { toast } from "sonner";
 
 const LoginSchema = z.object({
   user_name: z.string().nonempty({ message: "Username is required" }),
@@ -51,12 +52,15 @@ const LoginForm = () => {
   const { mutate, isPending } = useMutation({
     mutationKey: ["login"],
     mutationFn: (payload: AuthLoginType) => AUTH_LOGIN(payload),
+    onError: (error) => {
+      const message = error?.message || "Wrong username or password";
+      setServerError(message);
+      console.log("Login failed", error);
+    },
     onSuccess: (data) => {
+      toast.success("Login successful!");
       router.push("/");
       console.log(data, "===data===");
-    },
-    onError: (error) => {
-      console.log("Login failed", error);
     },
   });
 
@@ -69,7 +73,6 @@ const LoginForm = () => {
       password: data.password.trim(),
     });
   }
-
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
@@ -139,7 +142,7 @@ const LoginForm = () => {
             />
 
             {serverError && (
-              <div className="text-red-500 text-sm">{serverError}</div>
+              <p className="text-red-500 text-sm mt-2">{serverError}</p>
             )}
 
             <Button type="submit" className="w-full mt-6" disabled={isPending}>

@@ -1,6 +1,6 @@
 import axios from "@/lib/api/request";
-import { IUser } from "@/types/user-type";
-import { CardItem } from "@/types/card-type";
+import { IUser, CardItem } from "@/types/user-type";
+import type { FormValues } from "@/components/update-user-dialog";
 
 export const userRequest = () => {
   const PROFILE = async (): Promise<IUser> => {
@@ -18,8 +18,17 @@ export const userRequest = () => {
     });
   };
 
+  const UPDATE_USER = async (payload: FormValues): Promise<IUser> => {
+    return await axios({
+      url: "/user/update-profile",
+      method: "PUT",
+      data: payload,
+    });
+  };
+
   return {
-    PROFILE,
     GET_CARDS,
+    PROFILE,
+    UPDATE_USER,
   };
 };

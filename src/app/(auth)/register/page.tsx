@@ -4,7 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 import React, { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-// import { toast } from "sonner";
 import { z } from "zod";
 import { useDeviceStore } from "@/store/device-store";
 import { AuthRegisterType } from "@/types/auth-type";
@@ -55,7 +54,7 @@ const RegisterForm = () => {
   const { AUTH_REGISTER } = authRequest();
   const [showPassword, setShowPassword] = useState(false);
   const { device, fetchDeviceInfo } = useDeviceStore();
-  // console.log(device, fetchDeviceInfo, "===device===");
+  console.log(device);
 
   const router = useRouter();
 
@@ -78,8 +77,7 @@ const RegisterForm = () => {
     mutationFn: (payload: AuthRegisterType) => AUTH_REGISTER(payload),
     onSuccess: (data) => {
       // redirect to profile page
-      // router.push("/profile");
-      router.push("/");
+      router.push("/profile");
       console.log(data, "===data===");
     },
     onError: (error) => {
@@ -95,7 +93,7 @@ const RegisterForm = () => {
       device_type: device?.device_type,
       os: device?.os,
       browser: device?.browser,
-      ip_address: device?.ip_address,
+      // ip_address: device?.ip_address,
     });
   }
 
@@ -211,13 +209,8 @@ const RegisterForm = () => {
               )}
             />
 
-            <Button
-              type="submit"
-              className="w-full mt-6"
-              disabled={isPending}
-              // onClick={onSubmit}
-            >
-              {isPending ? "Creating Account..." : "Create Account"}
+            <Button type="submit" className="w-full mt-6" disabled={isPending}>
+              {isPending ? "Register..." : "Register"}
             </Button>
             {/* <Button type="submit" onClick={onSubmit} className="w-full">
               Create Account

@@ -1,16 +1,16 @@
-import request from "@/lib/api/request";
+import axios from "@/lib/api/request";
 import { CreateCardType, ICardResponse } from "@/types/card-type";
 
 export const cardRequest = () => {
-  const GET_CARD = async (id: string): Promise<ICardResponse> => {
-    return await request({
-      url: `/card/get-card/${id}`,
+  const GET_CARDS = async (id: string): Promise<ICardResponse> => {
+    return await axios({
+      url: `/card/get-cards${id}`,
       method: "GET",
     });
   };
 
   const CREATE_CARD = async (payload: CreateCardType) => {
-    return await request({
+    return await axios({
       url: "/card/create-card",
       method: "POST",
       data: payload,
@@ -20,7 +20,7 @@ export const cardRequest = () => {
     id: string,
     payload: CreateCardType
   ): Promise<ICardResponse> => {
-    return await request({
+    return await axios({
       url: `/card/update-card/${id}`,
       method: "PUT",
       data: payload,
@@ -28,7 +28,7 @@ export const cardRequest = () => {
   };
   return {
     UPDATE_CARD,
-    GET_CARD,
+    GET_CARDS,
     CREATE_CARD,
   };
 };

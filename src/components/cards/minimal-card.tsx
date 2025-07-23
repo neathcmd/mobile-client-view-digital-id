@@ -10,13 +10,13 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
-import { IUser } from "@/types/user-type";
+import { CardItem, IUser } from "@/types/user-type";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 
 interface MinimalCardProps {
   me: IUser | any; // TODO: Remove 'any' and use proper typing
-  card: any;
+  card: CardItem;
   idx: number;
   onDownloadStart?: () => void;
   onDownloadComplete?: () => void;
@@ -313,7 +313,7 @@ const MinimalCard: React.FC<MinimalCardProps> = ({
             {card.socialLinks && card.socialLinks.length > 0 && (
               <div className="space-y-2">
                 <h3 className="sr-only">Social Links</h3>
-                {card.socialLinks.map((socialLink: any, socialIdx: any) => (
+                {card.socialLinks.map((socialLink, socialIdx) => (
                   <Button
                     key={`${socialLink.platform}-${socialIdx}`}
                     variant="outline"

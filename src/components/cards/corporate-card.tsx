@@ -1,4 +1,4 @@
-// import { CardItem, IUser } from "@/types/user-type";
+import { CardItem, IUser } from "@/types/user-type";
 import React from "react";
 import { Card, CardContent } from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -22,8 +22,7 @@ const CorporateCard = ({
 }: {
   // me: IUser;
   me: any;
-  // card: CardItem;
-  card: any;
+  card: CardItem;
   idx: number;
 }) => {
   return (
@@ -35,10 +34,11 @@ const CorporateCard = ({
         <div key={idx}>
           <Card className="bg-gradient-to-br from-purple-800/90 to-pink-800/90 border-0 shadow-2xl backdrop-blur-sm">
             <Link href={`/update-card/${card.id}`}>
+              <h1>Ths is corporate card</h1>
               <Button
                 size="sm"
                 variant="outline"
-                className="absolute top-4 right-4 border-white text-white hover:bg-white/10 bg-white/20"
+                className="absoluimprove te top-4 right-4 border-white text-white hover:bg-white/10 bg-white/20"
               >
                 Edit
               </Button>
@@ -55,7 +55,7 @@ const CorporateCard = ({
                 {/* Creative Header */}
                 <div className="text-center mb-6">
                   <div className="relative inline-block mb-4">
-                    <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 via-pink-400 to-purple-400 rounded-2xl rotate-12 flex items-center justify-center shadow-lg">
+                    <div className="w-24 h-24  flex items-center justify-center shadow-lg">
                       <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
                         <AvatarImage
                           src={me?.data?.avatar}
@@ -207,7 +207,6 @@ const CorporateCard = ({
         </div>
       </div>
     </div>
-    // </div>
   );
 };
 
