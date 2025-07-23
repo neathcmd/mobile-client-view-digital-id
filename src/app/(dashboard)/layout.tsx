@@ -9,14 +9,15 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, checkAuth } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/login");
+      // console.log("lgout", isAuthenticated);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated]);
+  }, [isAuthenticated, checkAuth]);
   return <div>{children}</div>;
 }
