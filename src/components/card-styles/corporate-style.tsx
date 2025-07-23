@@ -6,17 +6,16 @@ import { QRCodeCanvas } from "qrcode.react";
 export default function CorporateCard({
   me,
   card,
-  idx,
 }: {
   me: any;
   card: CardItem;
   idx: number;
 }) {
-  const qrLink = card.link || "https://yourwebsite.com";
+  // ✅ Define QR link safely
+  const qrLink = card.qr_link || `https://yourdomain.com/cards/${card.id}`;
 
   return (
     <div
-      key={idx}
       className="p-6 bg-gradient-to-br from-indigo-600 via-teal-500 to-blue-500 rounded-3xl text-white shadow-xl max-w-md mx-auto mt-5"
     >
       {/* Avatar */}
@@ -58,7 +57,7 @@ export default function CorporateCard({
         <div className="grid gap-3 text-sm">
           <div className="flex items-center gap-2">
             <span className="font-medium text-purple-600">📍 Address:</span>
-            <span>{card.addres || "PSE School"}</span>
+            <span>{card.address || "PSE School"}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-medium text-purple-600">👤 Gender:</span>

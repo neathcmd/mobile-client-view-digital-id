@@ -1,14 +1,19 @@
-import axios from "axios";
-import { CreateCardPayload, CreateCardResponse } from "@/types/card-type";
 
-export const createCard = async (
-  payload: CreateCardPayload
-): Promise<CreateCardResponse> => {
-  try {
-    const response = await axios.post("/api/v1/card/create-card", payload);
-    return response.data;
-  } catch (error: any) {
-    console.error("Create card API error:", error);
-    throw error;
+import axios from "@/lib/api/request";
+import { CreateCardPayload,  } from "@/types/card-type";
+
+
+export const cardRequest = (() => {
+  const CREATE_CARD = async (payload: CreateCardPayload) => {
+    return await axios({
+      url: "/card/create-card",
+      withCredentials: true,
+      method: "POST",
+      data: payload,
+    })
   }
-};
+
+  return {
+    CREATE_CARD,
+  }
+})

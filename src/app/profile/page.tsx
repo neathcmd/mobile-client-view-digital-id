@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { userRequest } from "@/lib/api/get-me-api";
 import { useQuery } from "@tanstack/react-query";
 import { CardItem } from "@/types/card-type";
-import CorporateCard from "@/components/profile/corporate-card";
-import MinimalCard from "@/components/profile/minimal-card";
-import ModernCard from "@/components/profile/modern-card";
+import CorporateCard from "@/components/card-styles/corporate-style";
+import MinimalCard from "@/components/card-styles/minimal-style";
+import ModernCard from "@/components/card-styles/modern-style";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Plus } from "lucide-react";
 import { authRequest } from "@/lib/api/auth-api";
@@ -52,7 +52,7 @@ const Profile = () => {
   };
 
   const handleCreateCard = () => {
-    console.log("Navigate to create card page");
+    router.push("../create")
   };
 
   const handleAddMoreCard = () => {
@@ -258,15 +258,12 @@ const Profile = () => {
                     }
                     // renderCardComponent(card, index)
                   )} */}
-                  <div>
-                    {userCards.cards.map((res, i) => {
-                      return (
-                        <div>
-                          <h1>Hello world</h1>
-                        </div>
-                      );
-                    })}
-                  </div>
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  {userCards.cards.map((card: CardItem, index: number) =>
+    renderCardComponent(card, index)
+  )}
+</div>
+
                 </div>
               </section>
             )}

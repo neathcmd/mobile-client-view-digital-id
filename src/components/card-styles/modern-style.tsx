@@ -48,7 +48,7 @@ export default function ModernCard({
           <p className="text-gray-600 text-sm">
             {card.bio || "Bio not provided."}
           </p>
-          <p className="text-gray-600 text-sm">{card.addres || "PSE School"}</p>
+          <p className="text-gray-600 text-sm">{card.address || "PSE School"}</p>
         </div>
       </div>
     </div>

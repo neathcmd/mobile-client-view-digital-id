@@ -29,7 +29,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { authRequest } from "@/lib/api/auth-api";
 import { useMutation } from "@tanstack/react-query";
-import { AuthLoginType, AuthRegisterType } from "@/types/auth-type";
+import { AuthLoginType} from "@/types/auth-type";
 // import { AxiosError } from "axios";
 
 const LoginSchema = z.object({
