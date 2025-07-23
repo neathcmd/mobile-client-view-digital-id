@@ -77,7 +77,7 @@ const RegisterForm = () => {
     mutationFn: (payload: AuthRegisterType) => AUTH_REGISTER(payload),
     onSuccess: (data) => {
       // redirect to profile page
-      router.push("/profile");
+      router.push("/");
       console.log(data, "===data===");
     },
     onError: (error) => {

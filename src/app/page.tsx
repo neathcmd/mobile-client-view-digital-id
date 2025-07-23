@@ -1,6 +1,6 @@
 "use client";
 
-import Profile from "./(dashboard)/profile/[username]/page";
+import Profile from "./(dashboard)/profile/page";
 export default function Home() {
   return (
     <div>

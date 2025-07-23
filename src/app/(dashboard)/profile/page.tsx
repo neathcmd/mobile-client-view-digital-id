@@ -12,8 +12,12 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Plus, Mail } from "lucide-react";
 import { authRequest } from "@/lib/api/auth-api";
 import { useRouter } from "next/navigation";
+import { Edit3 } from "lucide-react";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const Profile = () => {
+  const [error, setError] = useState("");
   const router = useRouter();
   const { PROFILE, GET_CARDS } = userRequest();
   const { AUTH_LOGOUT } = authRequest();
@@ -45,16 +49,17 @@ const Profile = () => {
     router.push("/login");
   };
 
-  const handleEditProfile = () => {
+  const showEditProfileDialog = () => {
     console.log("===pop up edit profile input fields with default value===");
   };
 
-  const handleCreateCard = () => {
-    console.log("===Navigate to create card page===");
-  };
-
-  const handleAddMoreCard = () => {
-    console.log("===Navigate to create card input fields===");
+  const navigateToCardCreation = () => {
+    try {
+      router.push("/create-card");
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Failed to navigate to create card page. Please try again.");
+    }
   };
 
   const AvatarProfileImage =
@@ -153,10 +158,11 @@ const Profile = () => {
                   Profile Information
                 </h2>
                 <Button
-                  onClick={handleEditProfile}
+                  onClick={showEditProfileDialog}
                   type="button"
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none"
                 >
+                  <Edit3 className="w-4 h-4 mr-2" />
                   Edit Profile
                 </Button>
               </div>
@@ -175,6 +181,8 @@ const Profile = () => {
                 ))}
               </ul>
             </section>
+
+            {error && <p className="text-red-500">{error}</p>}
 
             {/* Cards Section */}
             {!hasCards ? (
@@ -213,7 +221,7 @@ const Profile = () => {
                   </p>
 
                   <Button
-                    onClick={handleCreateCard}
+                    onClick={navigateToCardCreation}
                     type="button"
                     className="bg-blue-600 hover:bg-blue-700 text-white py-6 px-6 rounded-lg text-base font-medium transition-colors shadow-md hover:shadow-lg focus:outline-none"
                   >
@@ -233,7 +241,7 @@ const Profile = () => {
                 <div className="flex items-center justify-between mb-6">
                   {hasOneCard && (
                     <Button
-                      onClick={handleAddMoreCard}
+                      onClick={navigateToCardCreation}
                       type="button"
                       className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none flex items-center"
                     >
