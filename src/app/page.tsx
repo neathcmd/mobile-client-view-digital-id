@@ -24,8 +24,8 @@ export default function Profile() {
   if (!isAuthenticated) return null;
 
   return (
-    <div>
+    <>
       <File />
-    </div>
+    </>
   );
 }

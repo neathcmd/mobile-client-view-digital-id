@@ -1,314 +1,141 @@
-"use client";
-
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-
-import { UserData } from "@/types/user-type";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { _envCons } from "@/constants";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Edit3 } from "lucide-react";
 import { userRequest } from "@/lib/api/get-me-api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-const formSchema = z.object({
-  full_name: z.string().min(1, "Full name is required"),
-  email: z.string().email("Invalid email"),
-  user_name: z.string().min(1, "Username is required"),
-  avatar: z.string().optional(), // Changed from required to optional
-});
+export interface FormValues {
+  full_name: string;
+  user_name: string;
+}
 
-export type FormValues = z.infer<typeof formSchema>;
-
-type Props = {
-  user: UserData;
-  onSave: (data: FormValues) => void;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  //   refetchUser: () => void;
-};
-
-export default function UpdateUserDialog({
-  user,
-  onSave,
-  open,
-  setOpen,
-}: //   refetchUser,
-Props) {
-  const queryClient = useQueryClient();
-  const { UPDATE_USER } = userRequest();
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      full_name: user?.full_name || "",
-      email: user?.email || "",
-      user_name: user?.user_name || "",
-      avatar: user?.avatar || "",
-    },
-  });
-
-  // Reset form on user change
-  useEffect(() => {
-    const defaultValues = {
-      full_name: user?.full_name || "",
-      email: user?.email || "",
-      user_name: user?.user_name || "",
-      avatar: user?.avatar || "",
-    };
-
-    form.reset(defaultValues);
-    setAvatarFile(null);
-    setAvatarPreview(user?.avatar || null);
-
-    // Set the avatar field value in the form
-    form.setValue("avatar", user?.avatar || "");
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
-  const onSubmit = async (data: FormValues) => {
-    let avatarUrl = data.avatar || ""; // Use form data avatar as fallback
-
-    // Upload new avatar only if new file is selected
-    if (avatarFile) {
-      try {
-        setIsSubmitting(true);
-        const formData = new FormData();
-        formData.append("image", avatarFile);
-        const res = await fetch(`${_envCons.baseUrl}/upload/upload-image`, {
-          method: "POST",
-          body: formData,
-        });
-        const uploadData = await res.json();
-        avatarUrl = uploadData.url;
-      } catch (error) {
-        console.error("Error uploading avatar:", error);
-        // Continue with existing avatar if upload fails
-        avatarUrl = avatarPreview || data.avatar || "";
-      }
-    } else if (avatarPreview) {
-      // If no new file but preview exists, use it
-      avatarUrl = avatarPreview;
-    }
-
-    const finalPayload = {
-      ...data,
-      avatar: avatarUrl,
-    };
-
-    console.log("Final payload:", finalPayload);
-    onSave(finalPayload);
-
-    updateUserProfileMutation.mutate(finalPayload);
+interface UpdateUserDialogProps {
+  user?: {
+    full_name?: string;
+    user_name?: string;
   };
+}
 
-  const updateUserProfileMutation = useMutation({
-    mutationKey: ["update-user-profile", "me"],
+const UpdateUserDialog = ({ user }: UpdateUserDialogProps) => {
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState<FormValues>({
+    full_name: user?.full_name || "",
+    user_name: user?.user_name || "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { UPDATE_USER } = userRequest();
+  const queryClient = useQueryClient();
+
+  const updateUserMutation = useMutation({
     mutationFn: (payload: FormValues) => UPDATE_USER(payload),
     onSuccess: () => {
-      form.reset();
-      setAvatarFile(null);
-      setAvatarPreview(null);
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      toast.success("Profile updated successfully!");
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["me"] });
-      //   refetchUser();
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "Failed to update profile");
+    },
+    onSettled: () => {
+      setIsLoading(false);
     },
   });
 
-  const isValidImage = (file: File) => {
-    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
-    const maxSize = 2 * 1024 * 1024;
-    return allowedTypes.includes(file.type) && file.size <= maxSize;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && isValidImage(file)) {
-      setAvatarFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setAvatarPreview(previewUrl);
-      // Update form value
-      form.setValue("avatar", previewUrl);
-    } else if (file) {
-      alert("Avatar must be an image under 2MB");
-      // Reset the input
-      e.target.value = "";
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    updateUserMutation.mutate(formData);
   };
 
-  const handleRemoveAvatar = () => {
-    setAvatarFile(null);
-    setAvatarPreview(null);
-    // Update form value
-    form.setValue("avatar", "");
-    // Reset file input
-    const fileInput = document.getElementById(
-      "avatarUpload"
-    ) as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = "";
-    }
+  const handleCancel = () => {
+    setFormData({
+      full_name: user?.full_name || "",
+      user_name: user?.user_name || "",
+    });
+    setOpen(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-md">
+      <DialogTrigger asChild>
+        <Button
+          type="button"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none"
+        >
+          <Edit3 className="w-4 h-4 mr-2" />
+          Edit Profile
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Update Profile</DialogTitle>
+          <DialogTitle>Edit Profile</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 pt-4"
-          >
-            {/* Avatar Upload */}
-            <div className="flex flex-col items-center space-y-2">
-              <label
-                htmlFor="avatarUpload"
-                className="cursor-pointer relative group"
-              >
-                <div className="w-24 h-24 rounded-full border overflow-hidden bg-gray-100">
-                  {avatarPreview ? (
-                    <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
-                      <AvatarImage src={avatarPreview} alt={avatarPreview} />
-                      <AvatarFallback className="text-2xl font-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                        {avatarPreview}
-                      </AvatarFallback>
-                    </Avatar>
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      + Avatar
-                    </div>
-                  )}
-                </div>
-                {avatarPreview && (
-                  <button
-                    type="button"
-                    onClick={handleRemoveAvatar}
-                    className="absolute -top-2 -right-2 bg-white text-red-500 rounded-full w-5 h-5 flex items-center justify-center text-xs shadow border"
-                  >
-                    ✕
-                  </button>
-                )}
-              </label>
-              <Input
-                id="avatarUpload"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-              <Label
-                className="text-sm font-medium cursor-pointer text-gray-600"
-                htmlFor="avatarUpload"
-              >
-                Click to change avatar
-              </Label>
-            </div>
-
-            {/* Avatar Form Field - This ensures avatar is part of the form */}
-            <FormField
-              control={form.control}
-              name="avatar"
-              render={({ field }) => (
-                <FormItem className="hidden">
-                  <FormControl>
-                    <Input type="hidden" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Full Name */}
-            <FormField
-              control={form.control}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="full_name">Full Name</Label>
+            <Input
+              id="full_name"
               name="full_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              type="text"
+              value={formData.full_name}
+              onChange={handleInputChange}
+              placeholder="Enter your full name"
+              required
             />
-
-            {/* Username */}
-            <FormField
-              control={form.control}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="user_name">Username</Label>
+            <Input
+              id="user_name"
               name="user_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="johndoe123" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              type="text"
+              value={formData.user_name}
+              onChange={handleInputChange}
+              placeholder="Enter your username"
+              required
             />
+          </div>
 
-            {/* Email */}
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="john@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Actions */}
-            <div className="flex justify-end gap-2 pt-4">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting || updateUserProfileMutation.isPending}
-              >
-                {isSubmitting || updateUserProfileMutation.isPending
-                  ? "Creating..."
-                  : "Create"}
-              </Button>
-            </div>
-          </form>
-        </Form>
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {isLoading ? "Save changeing..." : "Save change"}
+            </Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default UpdateUserDialog;

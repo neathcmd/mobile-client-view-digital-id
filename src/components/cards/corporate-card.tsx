@@ -27,97 +27,127 @@ const CorporateCard = ({
 }) => {
   return (
     <div>
-      {/* <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-orange-900 p-4"> */}
       <div className="max-w-sm mx-auto space-y-4">
-        {/* Creative Card */}
-
         <div key={idx}>
-          <Card className="bg-gradient-to-br from-purple-800/90 to-pink-800/90 border-0 shadow-2xl backdrop-blur-sm">
-            <Link href={`/update-card/${card.id}`}>
-              <h1>Ths is corporate card</h1>
-              <Button
-                size="sm"
-                variant="outline"
-                className="absoluimprove te top-4 right-4 border-white text-white hover:bg-white/10 bg-white/20"
-              >
-                Edit
-              </Button>
-            </Link>
-            <CardContent className="p-0 relative overflow-hidden">
-              {/* Artistic Background Elements */}
-              <div className="absolute inset-0">
-                <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-yellow-400/20 to-orange-400/20 rounded-full -translate-x-20 -translate-y-20"></div>
-                <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-400/20 to-blue-400/20 rounded-full translate-x-16 translate-y-16"></div>
-                <div className="absolute top-1/2 left-1/2 w-24 h-24 bg-gradient-to-br from-green-400/20 to-emerald-400/20 rounded-full -translate-x-12 -translate-y-12"></div>
-              </div>
+          <Card className="bg-white border border-gray-200 shadow-lg">
+            <CardContent className="p-0 relative">
+              {/* Corporate Header with Navy Blue Accent */}
+              <div className="bg-gradient-to-r from-slate-800 to-slate-900 p-6 relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-full -translate-y-16 translate-x-16"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-600/10 rounded-full translate-y-12 -translate-x-12"></div>
 
-              <div className="relative z-10 p-6">
-                {/* Creative Header */}
-                <div className="text-center mb-6">
-                  <div className="relative inline-block mb-4">
-                    <div className="w-24 h-24  flex items-center justify-center shadow-lg">
-                      <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
-                        <AvatarImage
-                          src={me?.data?.avatar}
-                          alt={me?.data?.user_name}
-                        />
-                        <AvatarFallback className="text-2xl font-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                          {me?.data?.user_name}
-                        </AvatarFallback>
-                      </Avatar>
-                    </div>
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-pulse"></div>
+                <Link href={`/update-card/${card.id}`}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="absoluimprove te top-4 right-4 border-white  text-white"
+                  >
+                    Edit
+                  </Button>
+                </Link>
+                <div className="relative z-10 text-center">
+                  <div className="mb-4">
+                    <Avatar className="w-20 h-20 mx-auto border-3 border-white shadow-md">
+                      <AvatarImage
+                        src={me?.data?.avatar}
+                        alt={me?.data?.user_name}
+                        className="object-cover"
+                      />
+                      <AvatarFallback className="text-lg font-semibold bg-blue-600 text-white">
+                        {me?.data?.user_name}
+                      </AvatarFallback>
+                    </Avatar>
                   </div>
-                  <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 mb-2 tracking-tight">
+                  <h1 className="text-xl font-bold text-white mb-1 tracking-wide">
                     {me?.data.full_name}
                   </h1>
-                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full inline-block transform -rotate-1">
-                    <span className="text-sm font-bold">{card.job}</span>
+                  <div className="bg-blue-600 text-white px-4 py-1 rounded text-sm font-medium inline-block">
+                    {card.job}
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6">
+                {/* Company Information */}
+                <div className="text-center mb-6 pb-4 border-b border-gray-100">
+                  <div className="inline-flex items-center px-4 py-2 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="w-2 h-2 bg-blue-600 rounded-full mr-2"></div>
+                    <span className="text-gray-700 font-semibold text-sm">
+                      {card.company}
+                    </span>
                   </div>
                 </div>
 
-                {/* Company Badge */}
-                <div className="text-center mb-4">
-                  <Badge className="bg-gradient-to-r from-cyan-400 to-blue-400 text-white border-0 px-3 py-1 transform rotate-1">
-                    {card.company}
-                  </Badge>
-                </div>
-
-                {/* Bio with Creative Styling */}
-                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 mb-6 border border-white/20">
-                  <p className="text-white text-sm leading-relaxed text-center font-medium">
-                    {card.bio}
-                  </p>
-                </div>
-
-                {/* Contact Info - Creative Layout */}
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                  <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-xl p-3 border border-purple-400/30">
-                    <Phone className="w-4 h-4 text-yellow-400 mb-1" />
-                    <p className="text-xs text-purple-200 mb-1">Call Me</p>
-                    <p className="text-sm text-white font-mono">{card.phone}</p>
-                  </div>
-                  <div className="bg-gradient-to-br from-pink-500/20 to-orange-500/20 backdrop-blur-sm rounded-xl p-3 border border-pink-400/30">
-                    <Mail className="w-4 h-4 text-cyan-400 mb-1" />
-                    <p className="text-xs text-pink-200 mb-1">Email Me</p>
-                    <p className="text-sm text-white break-all ">
-                      {me?.data?.email}
+                {/* Professional Bio */}
+                <div className="mb-6">
+                  <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-600">
+                    <p className="text-gray-700 text-sm leading-relaxed text-center italic">
+                      {card.bio}
                     </p>
                   </div>
-                  <div className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 backdrop-blur-sm rounded-xl p-3 border border-cyan-400/30">
-                    <Globe className="w-4 h-4 text-green-400 mb-1" />
-                    <p className="text-xs text-cyan-200 mb-1">Visit</p>
-                    <p className="text-sm text-white ">{card.web_site}</p>
+                </div>
+
+                {/* Contact Information - Professional Grid */}
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
+                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mr-3">
+                      <Phone className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
+                        Direct Line
+                      </p>
+                      <p className="text-sm text-gray-900 font-medium">
+                        {card.phone}
+                      </p>
+                    </div>
                   </div>
-                  <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-xl p-3 border border-green-400/30">
-                    <MapPin className="w-4 h-4 text-orange-400 mb-1" />
-                    <p className="text-xs text-green-200 mb-1">Find Me</p>
-                    <p className="text-sm text-white">{card.address}</p>
+
+                  <div className="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
+                    <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mr-3">
+                      <Mail className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
+                        Email
+                      </p>
+                      <p className="text-sm text-gray-900 font-medium truncate">
+                        {me?.data?.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
+                    <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center mr-3">
+                      <Globe className="w-4 h-4 text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
+                        Website
+                      </p>
+                      <p className="text-sm text-gray-900 font-medium">
+                        {card.web_site}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
+                    <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center mr-3">
+                      <MapPin className="w-4 h-4 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
+                        Office
+                      </p>
+                      <p className="text-sm text-gray-900 font-medium">
+                        {card.address}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                {/* Creative Action Buttons */}
-                <div className="space-y-3">
+                {/* Professional Action Buttons */}
+                <div className="space-y-3 pt-4 border-t border-gray-100">
                   <Button
                     onClick={async () => {
                       const toBase64 = async (url: string) => {
@@ -165,10 +195,6 @@ const CorporateCard = ({
                       const url = window.URL.createObjectURL(blob);
                       const link = document.createElement("a");
                       link.href = url;
-                      // link.download = `${me?.data.full_name.replace(
-                      //   " ",
-                      //   "_"
-                      // )}_${idx + 1}.vcf`;
                       link.download = `${(
                         me?.data.full_name ?? "Unnamed_User"
                       ).replace(" ", "_")}_${idx + 1}.vcf`;
@@ -178,26 +204,28 @@ const CorporateCard = ({
                       document.body.removeChild(link);
                       window.URL.revokeObjectURL(url);
                     }}
-                    className="w-full bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 hover:from-yellow-500 hover:via-pink-500 hover:to-purple-500 text-white font-bold border-0 shadow-lg transform hover:scale-105 transition-transform"
+                    className="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-3 rounded-lg transition-colors shadow-sm"
                   >
-                    <Download className="w-4 h-4 mr-2" />✨ Save My Contact ✨
+                    <Download className="w-4 h-4 mr-2" />
+                    Add to Contacts
                   </Button>
-                  <div className="grid grid-cols-2 gap-2">
+
+                  <div className="grid grid-cols-2 gap-3">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="border-2 border-cyan-400 text-cyan-300 hover:bg-cyan-400/20 font-bold bg-transparent"
+                      className="border-blue-200 text-blue-700 hover:bg-blue-50 font-medium bg-white py-2"
                     >
-                      <Linkedin className="w-3 h-3 mr-1" />
+                      <Linkedin className="w-4 h-4 mr-2" />
                       LinkedIn
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="border-2 border-purple-400 text-purple-300 hover:bg-purple-400/20 font-bold bg-transparent"
+                      className="border-gray-200 text-gray-700 hover:bg-gray-50 font-medium bg-white py-2"
                     >
-                      <Github className="w-3 h-3 mr-1" />
-                      GitHub
+                      <Github className="w-4 h-4 mr-2" />
+                      Portfolio
                     </Button>
                   </div>
                 </div>

@@ -4,7 +4,7 @@ import { CreateCardType, ICardResponse } from "@/types/card-type";
 export const cardRequest = () => {
   const GET_CARDS = async (id: string): Promise<ICardResponse> => {
     return await axios({
-      url: `/card/get-cards${id}`,
+      url: `/card/get-card/${id}`,
       method: "GET",
     });
   };

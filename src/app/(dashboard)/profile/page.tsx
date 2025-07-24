@@ -12,13 +12,12 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Plus, Mail } from "lucide-react";
 import { authRequest } from "@/lib/api/auth-api";
 import { useRouter } from "next/navigation";
-import { Edit3 } from "lucide-react";
 import { toast } from "sonner";
-import { useState } from "react";
-// import Link from "next/link";
+import UpdateUserDialog from "@/components/update-user-dialog";
+import { LogOut } from "lucide-react";
 
 const Profile = () => {
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const router = useRouter();
   const { PROFILE, GET_CARDS } = userRequest();
   const { AUTH_LOGOUT } = authRequest();
@@ -48,18 +47,6 @@ const Profile = () => {
   const handleLogout = () => {
     AUTH_LOGOUT();
     router.push("/login");
-  };
-
-  const showEditProfileDialog = (id: any) => {
-    try {
-      router.push(`/user/update-user/${id}`);
-    } catch (error) {
-      toast.message("something wrong");
-      console.log(
-        "===pop up edit profile input fields with default value===",
-        error
-      );
-    }
   };
 
   const navigateToCardCreation = () => {
@@ -98,21 +85,12 @@ const Profile = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Logout Button */}
           <div className="flex justify-end pt-6">
-            <Button onClick={handleLogout} variant="outline">
-              {" "}
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                />
-              </svg>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="text-white"
+            >
+              <LogOut className="w-4 h-4" />
               Logout
             </Button>
           </div>
@@ -166,14 +144,8 @@ const Profile = () => {
                 >
                   Profile Information
                 </h2>
-                <Button
-                  onClick={showEditProfileDialog}
-                  type="button"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none"
-                >
-                  <Edit3 className="w-4 h-4 mr-2" />
-                  Edit Profile
-                </Button>
+                {/* Replace the old button with the UpdateUserDialog component */}
+                <UpdateUserDialog user={me?.data} />
               </div>
 
               <ul className="space-y-4">
@@ -191,7 +163,7 @@ const Profile = () => {
               </ul>
             </section>
 
-            {error && <p className="text-red-500">{error}</p>}
+            {/* {error && <p className="text-red-500">{error}</p>} */}
 
             {/* Cards Section */}
             {!hasCards ? (
